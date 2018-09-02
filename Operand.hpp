@@ -7,9 +7,11 @@
 
 #include "IOperand.hpp"
 
-class Operand : IOperand {
+class Operand : public IOperand {
+private:
+
+//    IOperand const * operator+( IOperand const & rhs ) const;
 
 };
-
 
 #endif //AVM_OPERAND_HPP

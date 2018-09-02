@@ -30,16 +30,3 @@
 //    Type * data_ ;
 //    size_t size_ ;
 //};
-
-
-#ifndef AVM_OPERAND_HPP
-#define AVM_OPERAND_HPP
-
-class Oper : IOperand {
-    private:
-        enum eOperandType{ Int8, Int16, Int32, Float, Double };
-//    IOperand const * operator+( IOperand const & rhs ) const;
-
-};
-
-#endif //UNTITLED_OPER_HPP

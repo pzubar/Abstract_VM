@@ -1,5 +1,6 @@
 #include <iostream>
 #include "AbstractVM.hpp"
+#include "Operand.hpp"
 #include <vector>
 
 template <class Type>
@@ -29,11 +30,18 @@ class Array {
         size_t size_ ;
 };
 
-
 int main(void)
 {
-//    std::cout << "Hello, world!" << "\n";
-	AbstractVM duren;
+
+
+    for (int i = 0; i < 5 ; ++i) {
+        std::cout << "THIS->" << eOperandType(i) << std::endl;
+    }
+
+    std::cout << "_____________****______________" << "\n";
+
+
+    AbstractVM duren;
 	duren.sayHello();
 
 
