@@ -32,7 +32,9 @@ class Array {
 
 int main(void)
 {
-
+    Operand <std::string > oper("parasha"); 
+    //Operand oper* = new Operand(55);
+    oper.getValue();
 
     for (int i = 0; i < 5 ; ++i) {
         std::cout << "THIS->" << eOperandType(i) << std::endl;
