@@ -25,6 +25,9 @@ class Array {
         Type & operator []( size_t i) {
             return data_[i];
         }
+        void sayHello() {
+            std::cout << "Hellooo!" << std::endl;
+        }
     private :
         Type * data_ ;
         size_t size_ ;
