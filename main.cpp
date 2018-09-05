@@ -26,7 +26,7 @@ class Array {
             return data_[i];
         }
         void sayHello() {
-            std::cout << "Hellooo!" << std::endl;
+            std::cout << "Hello, world!" << std::endl;
         }
     private :
         Type * data_ ;
