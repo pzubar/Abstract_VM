@@ -35,43 +35,47 @@ class Array {
 
 int main(void)
 {
-    Operand <std::string > oper("parasha"); 
-    //Operand oper* = new Operand(55);
-    oper.getValue();
+    // Operand <int8_t> oper(120); 
+    
+    IOperand * oper = new Operand<int8_t>(55);  oper указывает Io, приэто
 
-    for (int i = 0; i < 5 ; ++i) {
-        std::cout << "THIS->" << eOperandType(i) << std::endl;
-    }
+    //oper->getValue();
+    //oper->TT();
+    // Operand <int16_t> poper(120);
+    // poper.getValue();
+    // for (int i = 0; i < 5 ; ++i) {
+    //     std::cout << "THIS->" << eOperandType(i) << std::endl;
+    // }
 
-    std::cout << "_____________****______________" << "\n";
+    // std::cout << "_____________****______________" << "\n";
 
 
-    AbstractVM duren;
-	duren.sayHello();
+    // AbstractVM duren;
+	// duren.sayHello();
 
 
-	std::cout << "_________" << "\n";
+	// std::cout << "_________" << "\n";
 
-	// Создание вектора, содержащего целые числа
-	std::vector<int> v = {7, 5, 16, 8};
+	// // Создание вектора, содержащего целые числа
+	// std::vector<int> v = {7, 5, 16, 8};
 
-	// Добавление ещё двух целых чисел в вектор
-	v.push_back(25);
-	v.push_back(13);
+	// // Добавление ещё двух целых чисел в вектор
+	// v.push_back(25);
+	// v.push_back(13);
 
-	// Проход по вектору с выводом значений
-	for ( int n : v ) {
-		std::cout << n << '\n';
-	}
+	// // Проход по вектору с выводом значений
+	// for ( int n : v ) {
+	// 	std::cout << n << '\n';
+	// }
 
-	std::cout << "_________" << "\n";
+	// std::cout << "_________" << "\n";
 
-	Array <int > ai (10);
-	ai[0] = 5;
-	std::cout << ai[0] << "\n";
-	std::cout << "size: " << ai.size() << "\n";
-	Array <float > af (20);
-	af[0] = 66.3423;
-	std::cout << af[0];
+	// Array <int > ai (10);
+	// ai[0] = 5;
+	// std::cout << ai[0] << "\n";
+	// std::cout << "size: " << ai.size() << "\n";
+	// Array <float > af (20);
+	// af[0] = 66.3423;
+	// std::cout << af[0];
 	return 0;
 }

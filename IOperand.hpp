@@ -5,12 +5,12 @@
 #ifndef AVM_IOPERAND_HPP
 #define AVM_IOPERAND_HPP
 
-enum eOperandType{ Int8 = 8, Int16, Int32, Float, Double };
+enum eOperandType{ Int8, Int16, Int32, Float, Double };
 
 class IOperand {
 public:
 //    virtual int getPrecision( void ) const = 0; // Precision of the type of the instance
-   // virtual eOperandType getType( void ) const = 0; // Type of the instance
+    virtual eOperandType getType( void ) const = 0; // Type of the instance
 //    virtual IOperand const * operator+( IOperand const & rhs ) const = 0; // Sum
 //    virtual IOperand const * operator-( IOperand const & rhs ) const = 0; // Difference
 //    virtual IOperand const * operator*( IOperand const & rhs ) const = 0; // Product
