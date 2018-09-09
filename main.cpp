@@ -4,78 +4,92 @@
 #include <vector>
 
 template <class Type>
-class Array {
-    public:
-        Array( size_t size )
-                :	data_ ( new Type [ size ]),
-                    size_ ( size ) {}
+class Array
+{
+  public:
+	Array(size_t size)
+		: data_(new Type[size]),
+		  size_(size) {}
 
-        ~Array () {
-            delete [] data_ ;
-        }
+	~Array()
+	{
+		delete[] data_;
+	}
 
-        size_t size() const {
-            return size_ ;
-        }
+	size_t size() const
+	{
+		return size_;
+	}
 
-        Type operator []( size_t i) const {
-            return data_[i];
-        }
+	Type operator[](size_t i) const
+	{
+		return data_[i];
+	}
 
-        Type & operator []( size_t i) {
-            return data_[i];
-        }
-        void sayHello() {
-            std::cout << "Hello, world!" << std::endl;
-        }
-    private :
-        Type * data_ ;
-        size_t size_ ;
+	Type &operator[](size_t i)
+	{
+		return data_[i];
+	}
+	void sayHello()
+	{
+		std::cout << "Hello, world!" << std::endl;
+	}
+
+  private:
+	Type *data_;
+	size_t size_;
 };
 
 int main(void)
 {
-    // Operand <int8_t> oper(120); 
-    
-    IOperand * oper = new Operand<int8_t>(55);  oper указывает Io, приэто
+	// Operand <int8_t> oper(120);
 
-    //oper->getValue();
-    //oper->TT();
-    // Operand <int16_t> poper(120);
-    // poper.getValue();
-    // for (int i = 0; i < 5 ; ++i) {
-    //     std::cout << "THIS->" << eOperandType(i) << std::endl;
-    // }
+	IOperand *oper = new Operand<int8_t>(55, Int8);
+    IOperand *operbig = new Operand<int32_t>(100, Int32);
 
-    // std::cout << "_____________****______________" << "\n";
+//    IOperand *operresult = ();
+	const IOperand *nw = *oper + *operbig;
+	std::cout << nw->toString();
 
+//    std::cout << (oper + operbig)->toSting() << std::endl;
+    //std::cout << strval << std::endl;
+//	std::cout << type << std::endl;
 
-    // AbstractVM duren;
-	// duren.sayHello();
+		//oper->getValue();
+		//oper->TT();
+		// Operand <int16_t> poper(120);
+		// poper.getValue();
+		// for (int i = 0; i < 5 ; ++i) {
+		//     std::cout << "THIS->" << eOperandType(i) << std::endl;
+		// }
 
+		// std::cout << "_____________****______________" << "\n";
 
-	// std::cout << "_________" << "\n";
+		// AbstractVM duren;
+		// duren.sayHello();
 
-	// // Создание вектора, содержащего целые числа
-	// std::vector<int> v = {7, 5, 16, 8};
+		// std::cout << "_________" << "\n";
 
-	// // Добавление ещё двух целых чисел в вектор
-	// v.push_back(25);
-	// v.push_back(13);
+		// // Создание вектора, содержащего целые числа
+		// std::vector<int> v = {7, 5, 16, 8};
 
-	// // Проход по вектору с выводом значений
-	// for ( int n : v ) {
-	// 	std::cout << n << '\n';
-	// }
+		// // Добавление ещё двух целых чисел в вектор
+		// v.push_back(25);
+		// v.push_back(13);
 
-	// std::cout << "_________" << "\n";
+		// // Проход по вектору с выводом значений
+		// for ( int n : v ) {
+		// 	std::cout << n << '\n';
+		// }
 
-	// Array <int > ai (10);
-	// ai[0] = 5;
-	// std::cout << ai[0] << "\n";
-	// std::cout << "size: " << ai.size() << "\n";
-	// Array <float > af (20);
-	// af[0] = 66.3423;
-	// std::cout << af[0];
-	return 0;
+		// std::cout << "_________" << "\n";
+
+		// Array <int > ai (10);
+		// ai[0] = 5;
+		// std::cout << ai[0] << "\n";
+		// std::cout << "size: " << ai.size() << "\n";
+		// Array <float > af (20);
+		// af[0] = 66.3423;
+		// std::cout << af[0];
+		return 0;
 }

@@ -2,7 +2,7 @@
 // Created by Petro ZUBAR on 02.09.2018.
 //
 
-#include "IOperand.hpp"
+//#include "IOperand.hpp"
 
 //template <class Type>
 //class Array {
