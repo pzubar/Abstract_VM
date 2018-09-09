@@ -1,6 +1,7 @@
 #include <iostream>
 #include "AbstractVM.hpp"
 #include "Operand.hpp"
+#include "Factory.hpp"
 #include <vector>
 
 template <class Type>
@@ -43,13 +44,14 @@ class Array
 int main(void)
 {
 	// Operand <int8_t> oper(120);
-
-	IOperand *oper = new Operand<int8_t>(55, Int8);
-    IOperand *operbig = new Operand<int32_t>(100, Int32);
+    std::string str = "55";
+	IOperand *oper = Factory::createOperand(str, Int8);
+    std::cout << oper->toString();
+//    IOperand *operbig = new Operand<int32_t>(100, Int32);
 
 //    IOperand *operresult = ();
-	const IOperand *nw = *oper + *operbig;
-	std::cout << nw->toString();
+//	const IOperand *nw = *oper + *operbig;
+//	std::cout << nw->toString();
 
 //    std::cout << (oper + operbig)->toSting() << std::endl;
     //std::cout << strval << std::endl;
