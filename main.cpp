@@ -45,7 +45,9 @@ int main(void)
 {
 	// Operand <int8_t> oper(120);
     std::string str = "55.123";
-	IOperand *oper = Factory::createOperand(str, Float);
+    Factory factory = Factory();
+
+	const IOperand *oper = factory.createOperand(Int8, str);
     std::cout << oper->toString();
 
 
