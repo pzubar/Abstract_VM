@@ -44,9 +44,11 @@ class Array
 int main(void)
 {
 	// Operand <int8_t> oper(120);
-    std::string str = "55";
-	IOperand *oper = Factory::createOperand(str, Int8);
+    std::string str = "55.123";
+	IOperand *oper = Factory::createOperand(str, Float);
     std::cout << oper->toString();
+
+
 //    IOperand *operbig = new Operand<int32_t>(100, Int32);
 
 //    IOperand *operresult = ();

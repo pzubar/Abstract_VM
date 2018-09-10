@@ -5,36 +5,43 @@
 #ifndef ABSTRACTVM_FACTORY_HPP
 #define ABSTRACTVM_FACTORY_HPP
 
-#include "IOperand.hpp"
 #include "Operand.hpp"
 
-class Factory {
-    public:
-        static IOperand * createInt8operand(std::string & value)
-        {
-            return new Operand<int8_t>(std::stod(value), Int8);
-        }
-        static IOperand * createInt16operand(std::string & value)
-        {
-            return new Operand<int16_t>(std::stod(value), Int16);
-        }
-        static IOperand * createOperand(std::string & value, eOperandType type) {
+class Factory
+{
+  private:
+	static IOperand *_createInt8operand(std::string &value)
+	{
+		return new Operand<int8_t>(std::stod(value), Int8);
+	}
+	static IOperand *_createInt16operand(std::string &value)
+	{
+		return new Operand<int16_t>(std::stod(value), Int16);
+	}
+	static IOperand *_createInt32operand(std::string &value)
+	{
+		return new Operand<int32_t>(std::stod(value), Int32);
+	}
+	static IOperand *_createFloatOperand(std::string &value)
+	{
+		return new Operand<float>(std::stod(value), Float);
+	}
+	static IOperand *_createDoubleOperand(std::string &value)
+	{
+		return new Operand<double>(std::stod(value), Double);
+	}
 
-            static IOperand *((*arr[]))(std::string &value) {
-                Factory::createInt8operand,
-                Factory::createInt16operand
-            };
-
-            return arr[type](value);
-        }
-
-//            static IOperand * (*options []) (std::string & value) = {
-//                    Factory::createInt8operand,
-//                    Factory::createInt16operand;
-//            };
-//            return new Operand<int16_t>(std::stod(value), Int16);
-//        }
+  public:
+	static IOperand *createOperand(std::string &value, eOperandType type)
+	{
+		static IOperand *((*arr[]))(std::string & value){
+			_createInt8operand,
+			_createInt16operand,
+			_createInt32operand,
+			_createFloatOperand,
+			_createDoubleOperand
+		};
+		return arr[type](value);
+	};
 };
-
-
 #endif //ABSTRACTVM_FACTORY_HPP
