@@ -44,11 +44,17 @@ class Array
 int main(void)
 {
 	// Operand <int8_t> oper(120);
-    std::string str = "55.123";
-    Factory factory = Factory();
+//    std::string str = "55.123";
+//    Factory factory = Factory();
 
-	const IOperand *oper = factory.createOperand(Int8, str);
-    std::cout << oper->toString();
+	AbstractVM abstractVM = AbstractVM();
+
+	abstractVM.push("55.3", Double);
+	abstractVM.push("75", Double);
+	abstractVM.dump();
+
+//	const IOperand *oper = factory.createOperand(Int8, str);
+//    std::cout << oper->toString();
 
 
 //    IOperand *operbig = new Operand<int32_t>(100, Int32);

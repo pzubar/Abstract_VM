@@ -4,6 +4,6 @@
 
 #include "AbstractVM.hpp"
 
-void AbstractVM::sayHello() {
-    std::cout << "Hello, ma friend!\n";
-}
+//void AbstractVM::sayHello() {
+//    std::cout << "Hello, ma friend!\n";
+//}

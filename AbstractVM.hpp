@@ -6,10 +6,31 @@
 #define AVM_ABSTRACTVM_HPP
 
 #include <iostream>
+#include <vector>
+#include "Factory.hpp"
+
 
 class AbstractVM {
+    private:
+        std::vector<const IOperand *> _vector;
+        Factory _factory;
     public:
-        void sayHello();
+    AbstractVM(){
+        _factory = Factory();
+    };
+    ~AbstractVM(){};
+
+    void push(std::string const & value, eOperandType type) {
+        const IOperand * operand = _factory.createOperand(type, value);
+        _vector.push_back(operand);
+    };
+
+    void dump(void) {
+        for(int i = 0; i < _vector.size(); i++) {
+            std::cout << _vector[i]->toString() << std::endl;
+        };
+    };
+
 };
 
 
