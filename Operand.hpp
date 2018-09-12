@@ -8,7 +8,8 @@
 #include <iostream>
 #include <string>
 #include "IOperand.hpp"
-#include <algorithm> //for max
+#include <algorithm>
+#include <cmath>
 
 template <class Type>
 class Operand : public IOperand
@@ -55,6 +56,10 @@ class Operand : public IOperand
 	virtual IOperand const *operator/(IOperand const &rhs) const
 	{
 		return new Operand<int32_t>((this->_value) / std::stod(rhs.toString()), _getBiggerType(rhs));
+	}
+	virtual IOperand const *operator%(IOperand const &rhs) const
+	{
+		return new Operand<int32_t>(std::fmod((this->_value),std::stod(rhs.toString())), _getBiggerType(rhs));
 	}
 };
 

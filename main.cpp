@@ -52,11 +52,15 @@ int main(void)
 	abstractVM.push("55.3", Double);
 	abstractVM.push("75", Double);
 	abstractVM.push("55", Int8);
-	abstractVM.dump();
+	abstractVM.assert("55");
+//	abstractVM.dump();
 
 //	abstractVM.pop();
 //	abstractVM.pop();
+
+	abstractVM.dump();
 	std::cout << "----" << std::endl;
+	abstractVM.add();
 	abstractVM.dump();
 
 //	const IOperand *oper = factory.createOperand(Int8, str);
@@ -109,5 +113,6 @@ int main(void)
 		// Array <float > af (20);
 		// af[0] = 66.3423;
 		// std::cout << af[0];
+		system("leaks avm");
 		return 0;
 }
