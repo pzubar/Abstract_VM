@@ -8,7 +8,6 @@
 #include <iostream>
 #include <string>
 #include "IOperand.hpp"
-#include <typeinfo>
 #include <algorithm> //for max
 
 template <class Type>
@@ -18,8 +17,10 @@ class Operand : public IOperand
 	Type _value;
 	std::string _strval;
 	eOperandType _type;
-	int _precision;
 	Operand();
+	eOperandType _getBiggerType(IOperand const &rhs) const{
+		return static_cast<eOperandType>(std::max(this->getPrecision(), rhs.getPrecision()));
+	};
 
   public:
 	Operand(Type val, eOperandType type)
@@ -28,24 +29,32 @@ class Operand : public IOperand
 	{
 		_strval = std::to_string(val);
 	};
-
+	int getPrecision( void ) const {
+		return this->getType();
+	}
 	eOperandType getType(void) const
 	{
 		return this->_type;
 	}
 	virtual std::string const &toString(void) const
 	{
-		//		std::string result = new	std::to_string(555);
-		//std::string s = "akaka";
 		return _strval;
-		//        return "gega";
-		//        return new Operand<int32_t>((static_cast<int32_t>(this->_value) + static_cast<int32_t>(rhs->toString()), Int32);
 	}
 	virtual IOperand const *operator+(IOperand const &rhs) const
 	{
-		eOperandType bigerType = std::max(this->getType(), rhs.getType());
-		std::cout << "bigger_type: " << bigerType << std::endl; //this->getType() > rhs.getType() ? this->getType()
-		return new Operand<int32_t>((this->_value) + std::stod(rhs.toString()), bigerType);
+		return new Operand<int32_t>((this->_value) + std::stod(rhs.toString()), _getBiggerType(rhs));
+	}
+	virtual IOperand const *operator-(IOperand const &rhs) const
+	{
+		return new Operand<int32_t>((this->_value) - std::stod(rhs.toString()), _getBiggerType(rhs));
+	}
+	virtual IOperand const *operator*(IOperand const &rhs) const
+	{
+		return new Operand<int32_t>((this->_value) * std::stod(rhs.toString()), _getBiggerType(rhs));
+	}
+	virtual IOperand const *operator/(IOperand const &rhs) const
+	{
+		return new Operand<int32_t>((this->_value) / std::stod(rhs.toString()), _getBiggerType(rhs));
 	}
 };
 

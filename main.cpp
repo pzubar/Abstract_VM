@@ -51,6 +51,12 @@ int main(void)
 
 	abstractVM.push("55.3", Double);
 	abstractVM.push("75", Double);
+	abstractVM.push("55", Int8);
+	abstractVM.dump();
+
+//	abstractVM.pop();
+//	abstractVM.pop();
+	std::cout << "----" << std::endl;
 	abstractVM.dump();
 
 //	const IOperand *oper = factory.createOperand(Int8, str);
