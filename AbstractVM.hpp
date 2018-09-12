@@ -10,9 +10,12 @@
 #include <forward_list>
 #include "Factory.hpp"
 #include <array>
+#include <map>
 //TODO - add exceptions
 class AbstractVM {
 private:
+    std::map<std::string, void (AbstractVM::*)(void)>_map;
+
 	std::forward_list<const IOperand *> _container;
 	size_t _containerSize = 0;
 	Factory _factory;
@@ -28,9 +31,7 @@ private:
 	};
 
 public:
-	AbstractVM() {
-		_factory = Factory();
-	};
+	AbstractVM();
 
 	~AbstractVM() {};
 
@@ -60,22 +61,7 @@ public:
 			std::cout << "Assertation FAILED\n";
 	}
 
-	void add(void) {
-		std::array<const IOperand *, 2> buff;
-
-		if (_containerSize < 2) {
-			std::cout << "unable to ADD, there are less than 2 elements!!!" << std::endl;
-		}
-		buff[0] = _container.front();
-		_container.pop_front();
-		buff[1] = _container.front();
-		_container.pop_front();
-		const IOperand *operand = *buff[0] + *buff[1];
-		_container.push_front(operand);
-		delete (buff[0]);
-		delete (buff[1]);
-
-	}
+	void add(void);
 
 	void sub(void) {
 		std::array<const IOperand *, 2> buff;

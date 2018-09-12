@@ -41,27 +41,30 @@ class Array
 	size_t size_;
 };
 
+void lala(){
+    std::cout << "lala\n";
+}
+
 int main(void)
 {
-
 	AbstractVM abstractVM = AbstractVM();
+//	regexp: "(\s*)?push\s((int((8|16|32)\(\d*\)))|((float|double)(\(\d*\))))$"
+//	abstractVM.push("55.3", Double);
+//	abstractVM.push("75", Double);
+//	abstractVM.push("93", Int8);
+//	abstractVM.print();
+//	abstractVM.assert("55");
+//abstractVM.add();
 
-	abstractVM.push("55.3", Double);
-	abstractVM.push("75", Double);
-	abstractVM.push("93", Int8);
-	abstractVM.print();
-	abstractVM.assert("55");
+//	abstractVM.dump();
+//	std::cout << "----" << std::endl;
+//	abstractVM.sub();
+//	abstractVM.dump();
+//
+//
+//	std::cout << "----" << std::endl;
 
 
-	abstractVM.dump();
-	std::cout << "----" << std::endl;
-	abstractVM.sub();
-	abstractVM.dump();
-
-
-	std::cout << "----" << std::endl;
-
-
-	system("leaks avm");
+//	system("leaks avm");
 	return 0;
 }
