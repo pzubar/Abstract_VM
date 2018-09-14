@@ -10,7 +10,7 @@
 #include "IOperand.hpp"
 #include <algorithm>
 #include <cmath>
-
+#include <exception>
 template <class Type>
 class Operand : public IOperand
 {
@@ -22,7 +22,6 @@ class Operand : public IOperand
 	eOperandType _getBiggerType(IOperand const &rhs) const{
 		return static_cast<eOperandType>(std::max(this->getPrecision(), rhs.getPrecision()));
 	};
-
   public:
 	Operand(Type val, eOperandType type)
 		: _value(val),

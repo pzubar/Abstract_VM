@@ -49,10 +49,18 @@ int main(void)
 {
 	AbstractVM abstractVM = AbstractVM();
 //	regexp: "(\s*)?push\s((int((8|16|32)\(\d*\)))|((float|double)(\(\d*\))))$"
-//	abstractVM.push("55.3", Double);
-//	abstractVM.push("75", Double);
-//	abstractVM.push("93", Int8);
-//	abstractVM.print();
+	abstractVM.push("55.3", Double);
+	abstractVM.push("75", Double);
+	abstractVM.push("0", Int8);
+	try {
+		abstractVM.div();
+	}
+	catch (std::exception &exception)
+	{
+		std::cout << "catch it!" << exception.what() << std::endl;
+	}
+	abstractVM.dump();
+
 //	abstractVM.assert("55");
 //abstractVM.add();
 

@@ -9,9 +9,12 @@
 #include <vector>
 #include <forward_list>
 #include "Factory.hpp"
+#include "Operand.hpp"
 #include <array>
 #include <map>
+#include <exception>
 //TODO - add exceptions
+
 class AbstractVM {
 private:
     std::map<std::string, void (AbstractVM::*)(void)>_map;
@@ -32,8 +35,13 @@ private:
 
 public:
 	AbstractVM();
-
 	~AbstractVM() {};
+	class Exception : public std::exception
+	{
+		private:
+		public:
+			Exception(char *msg) : std::exception(msg){};
+	};
 
 	void push(std::string const &value, eOperandType type) {
 		const IOperand *operand = _factory.createOperand(type, value);
@@ -79,6 +87,30 @@ public:
 
 	}
 
+	void div(void) {
+		std::array<const IOperand *, 2> buff;
+
+		if (_containerSize < 2) {
+			std::cout << "unable to SUB, there are less than 2 elements!!!" << std::endl;
+		}
+
+		buff = _unstackElems();
+		if (buff[0]->toString() == "0") {
+			//TODO return unstacked elements
+			throw AbstractVM::Exception("Lala");
+		}
+
+		const IOperand *operand = *buff[1] / *buff[0];
+		_container.push_front(operand);
+
+
+
+		delete (buff[0]);
+		delete (buff[1]);
+
+
+	}
+
 	void print(void)
 	{
 		if (_container.front()->getType() == Int8)
@@ -87,6 +119,11 @@ public:
 			std::cout << "Printing in ascii FAILED\n";
 
 	}
+
+	void setCommand(std::string command)
+    {
+
+    }
 
 };
 
