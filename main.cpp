@@ -3,51 +3,38 @@
 #include "Operand.hpp"
 #include "Factory.hpp"
 #include <vector>
-
-template <class Type>
-class Array
-{
-  public:
-	Array(size_t size)
-		: data_(new Type[size]),
-		  size_(size) {}
-
-	~Array()
-	{
-		delete[] data_;
-	}
-
-	size_t size() const
-	{
-		return size_;
-	}
-
-	Type operator[](size_t i) const
-	{
-		return data_[i];
-	}
-
-	Type &operator[](size_t i)
-	{
-		return data_[i];
-	}
-	void sayHello()
-	{
-		std::cout << "Hello, world!" << std::endl;
-	}
-
-  private:
-	Type *data_;
-	size_t size_;
-};
-
-void lala(){
-    std::cout << "lala\n";
-}
+#include <algorithm>
+#include <iterator>
+#include <regex>
 
 int main(void)
 {
 	AbstractVM abstractVM = AbstractVM();
+
+	std::string str = "push int8(100)";
+	std::regex reg ("(\\s*)?push\\s((int((8|16|32)\\(\\d*\\)))|((float|double)(\\(\\d*\\))))$");
+	std::smatch mathes;
+
+//	std::copy( std::sregex_token_iterator(str.begin(), str.end(), reg, -1),
+//			   std::sregex_token_iterator(),
+//			   std::ostream_iterator<std::string>(std::cout, "\n"));
+//	str::smatch
+
+	std::sregex_iterator currentMatch(str.begin(), str.end(), reg);
+	std::sregex_iterator lastMatch;
+	while (currentMatch != lastMatch)
+	{
+		std::smatch match = *currentMatch;
+		std::cout << match.str() << "\n";
+		currentMatch++;
+	}
+	std::cout << std::endl;
+
+	std::regex ws_re("\\s|\\(|\\)");
+	std::copy( std::sregex_token_iterator(str.begin(), str.end(), ws_re, -1),
+			   std::sregex_token_iterator(),
+			   std::ostream_iterator<std::string>(std::cout, "\n"));
+
 //	regexp: "(\s*)?push\s((int((8|16|32)\(\d*\)))|((float|double)(\(\d*\))))$"
 	abstractVM.push("55.3", Double);
 	abstractVM.push("75", Double);

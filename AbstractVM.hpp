@@ -36,11 +36,16 @@ private:
 public:
 	AbstractVM();
 	~AbstractVM() {};
-	class Exception : public std::exception
+class Exception : public std::exception
 	{
 		private:
+			const char *_msg;
 		public:
-			Exception(char *msg) : std::exception(msg){};
+			Exception(const char *msg): _msg(msg){};
+			virtual const char* what() const throw()
+			{
+				return (_msg);
+			}
 	};
 
 	void push(std::string const &value, eOperandType type) {
@@ -97,7 +102,7 @@ public:
 		buff = _unstackElems();
 		if (buff[0]->toString() == "0") {
 			//TODO return unstacked elements
-			throw AbstractVM::Exception("Lala");
+			throw AbstractVM::Exception("Division by zero!");
 		}
 
 		const IOperand *operand = *buff[1] / *buff[0];
