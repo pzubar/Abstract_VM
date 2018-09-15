@@ -17,20 +17,20 @@
 
 class AbstractVM {
 private:
-    std::map<std::string, void (AbstractVM::*)(void)>_map;
-
+    std::map<std::string, void (AbstractVM::*)(void)> _operations;
+	std::map<std::string, void (AbstractVM::*)(std::string const &, eOperandType type)> _commands;
+	std::map<std::string, eOperandType> _types;
 	std::forward_list<const IOperand *> _container;
 	size_t _containerSize = 0;
 	Factory _factory;
+	//array of two elems
+	const IOperand * _buff[2];
 
-	std::array<const IOperand *, 2> _unstackElems(void) {
-		std::array<const IOperand *, 2> buff;
-
-		buff[0] = _container.front();
+	void _unstackElems(void) {
+		_buff[0] = _container.front();
 		_container.pop_front();
-		buff[1] = _container.front();
+		_buff[1] = _container.front();
 		_container.pop_front();
-		return (buff);
 	};
 
 public:
@@ -60,7 +60,6 @@ class Exception : public std::exception
 	}
 
 	void dump(void) {
-		std::cout << "fwd_list:\n";
 		for (const auto iterator : _container) {
 			std::cout << stod(iterator->toString()) << std::endl;
 		}
@@ -76,45 +75,6 @@ class Exception : public std::exception
 
 	void add(void);
 
-	void sub(void) {
-		std::array<const IOperand *, 2> buff;
-
-		if (_containerSize < 2) {
-			std::cout << "unable to SUB, there are less than 2 elements!!!" << std::endl;
-		}
-
-		buff = _unstackElems();
-		const IOperand *operand = *buff[1] - *buff[0];
-		_container.push_front(operand);
-		delete (buff[0]);
-		delete (buff[1]);
-
-
-	}
-
-	void div(void) {
-		std::array<const IOperand *, 2> buff;
-
-		if (_containerSize < 2) {
-			std::cout << "unable to SUB, there are less than 2 elements!!!" << std::endl;
-		}
-
-		buff = _unstackElems();
-		if (buff[0]->toString() == "0") {
-			//TODO return unstacked elements
-			throw AbstractVM::Exception("Division by zero!");
-		}
-
-		const IOperand *operand = *buff[1] / *buff[0];
-		_container.push_front(operand);
-
-
-
-		delete (buff[0]);
-		delete (buff[1]);
-
-
-	}
 
 	void print(void)
 	{
@@ -129,6 +89,11 @@ class Exception : public std::exception
     {
 
     }
+
+
+	void excecute(std::string operation);
+
+	void excecute(std::string command, std::string type, std::string num);
 
 };
 

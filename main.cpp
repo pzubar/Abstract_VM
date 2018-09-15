@@ -7,45 +7,76 @@
 #include <iterator>
 #include <regex>
 
+void printscreen(std::string string)
+{
+	std::cout << string << "\n";
+}
+
 int main(void)
 {
 	AbstractVM abstractVM = AbstractVM();
 
-	std::string str = "push int8(100)";
-	std::regex reg ("(\\s*)?push\\s((int((8|16|32)\\(\\d*\\)))|((float|double)(\\(\\d*\\))))$");
-	std::smatch mathes;
+	abstractVM.excecute("push", "int8", "100");
+//	std::string str = "push int8(100);";
+//	if (str.find(";;") == std::string::npos) {
+//		str = str.substr(0, str.find(";"));
+//	}
+//
+//	std::cout << "New string:" << str << "\n";
+//	std::regex reg ("(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|((float|double)(\\([-]?\\d*[.]*?\\d+\\)))))|(pop|dump|add|sub|mul|div|mod|print|exit|;;))(\\s*)?$");
+//	std::smatch mathes;
+//
+//	std::cout << "Match? " << std::regex_match(str.begin(), str.end(), reg)  << "\n";
 
-//	std::copy( std::sregex_token_iterator(str.begin(), str.end(), reg, -1),
+
+
+
+
+//	std::sregex_iterator currentMatch(str.begin(), str.end(), reg);
+//	std::sregex_iterator lastMatch;
+//	while (currentMatch != lastMatch)
+//	{
+//		std::smatch match = *currentMatch;
+//		std::cout << match.str() << "\n";
+//		currentMatch++;
+//	}
+//	std::cout << std::endl;
+
+
+
+//	std::vector<std::string> result(3);
+//
+//
+//
+//	std::regex ws_re("\\s|\\(|\\)");
+//	std::copy( std::sregex_token_iterator(str.begin(), str.end(), ws_re, -1),
 //			   std::sregex_token_iterator(),
-//			   std::ostream_iterator<std::string>(std::cout, "\n"));
-//	str::smatch
+//			   result.begin());
+//
+//	for (auto i : result)
+//	{
+//		std::cout << i << std::endl;
+//	}
+//	std::cout << result.size();
 
-	std::sregex_iterator currentMatch(str.begin(), str.end(), reg);
-	std::sregex_iterator lastMatch;
-	while (currentMatch != lastMatch)
-	{
-		std::smatch match = *currentMatch;
-		std::cout << match.str() << "\n";
-		currentMatch++;
-	}
-	std::cout << std::endl;
 
-	std::regex ws_re("\\s|\\(|\\)");
-	std::copy( std::sregex_token_iterator(str.begin(), str.end(), ws_re, -1),
-			   std::sregex_token_iterator(),
-			   std::ostream_iterator<std::string>(std::cout, "\n"));
+	//if result.size == 3
+	//AVM parser(res[0]..[2])
+//	else
+//		AVM parser(res[0])
 
-//	regexp: "(\s*)?push\s((int((8|16|32)\(\d*\)))|((float|double)(\(\d*\))))$"
-	abstractVM.push("55.3", Double);
-	abstractVM.push("75", Double);
-	abstractVM.push("0", Int8);
-	try {
-		abstractVM.div();
-	}
-	catch (std::exception &exception)
-	{
-		std::cout << "catch it!" << exception.what() << std::endl;
-	}
+//
+//abstractVM.push("55.3", Double);
+//	abstractVM.push("75", Double);
+//	abstractVM.push("0", Int8);
+//
+//	try {
+//		abstractVM.div();
+//	}
+//	catch (std::exception &exception)
+//	{
+//		std::cout << "catch it!" << exception.what() << std::endl;
+//	}
 	abstractVM.dump();
 
 //	abstractVM.assert("55");
