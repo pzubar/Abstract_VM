@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
-#include <regex>
+
 
 void printscreen(std::string string)
 {
@@ -16,16 +16,22 @@ int main(void)
 {
 	AbstractVM abstractVM = AbstractVM();
 
-	abstractVM.excecute("push", "int8", "100");
-//	std::string str = "push int8(100);";
+//	abstractVM.excecute("push", "int8", "100");
+//	std::string str = "push int8(100)";
+
+	abstractVM.setExpression("push int8(100)");
+	abstractVM.setExpression("push int8(200)");
+
 //	if (str.find(";;") == std::string::npos) {
 //		str = str.substr(0, str.find(";"));
 //	}
 //
 //	std::cout << "New string:" << str << "\n";
-//	std::regex reg ("(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|((float|double)(\\([-]?\\d*[.]*?\\d+\\)))))|(pop|dump|add|sub|mul|div|mod|print|exit|;;))(\\s*)?$");
+//	std::regex reg("(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
+//				 "((float|double)(\\([-]?\\d*[.]*?\\d+\\)))))|(pop|dump|add|sub|mul|div|mod|print|exit|;;))(\\s*)?$");
 //	std::smatch mathes;
 //
+
 //	std::cout << "Match? " << std::regex_match(str.begin(), str.end(), reg)  << "\n";
 
 

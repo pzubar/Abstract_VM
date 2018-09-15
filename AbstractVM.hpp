@@ -10,9 +10,10 @@
 #include <forward_list>
 #include "Factory.hpp"
 #include "Operand.hpp"
-#include <array>
 #include <map>
 #include <exception>
+#include <regex>
+
 //TODO - add exceptions
 
 class AbstractVM {
@@ -20,6 +21,7 @@ private:
     std::map<std::string, void (AbstractVM::*)(void)> _operations;
 	std::map<std::string, void (AbstractVM::*)(std::string const &, eOperandType type)> _commands;
 	std::map<std::string, eOperandType> _types;
+
 	std::forward_list<const IOperand *> _container;
 	size_t _containerSize = 0;
 	Factory _factory;
@@ -85,16 +87,31 @@ class Exception : public std::exception
 
 	}
 
-	void setCommand(std::string command)
-    {
-
-    }
-
-
 	void excecute(std::string operation);
 
 	void excecute(std::string command, std::string type, std::string num);
 
+	void setExpression(std::string expression)
+	{
+		std::regex reg(	"(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
+				 		"((float|double)(\\([-]?\\d*[.]*?\\d+\\)))))|"
+						"(pop|dump|add|sub|mul|div|mod|print|exit|;;))(\\s*)?$");
+		if (!std::regex_match(expression.begin(), expression.end(), reg))
+		{
+			throw Exception("Invalid expression!");
+		}
+		std::vector<std::string> result(3);
+
+		std::regex ws_re("\\s|\\(|\\)");
+		std::copy( std::sregex_token_iterator(expression.begin(), expression.end(), ws_re, -1),
+				   std::sregex_token_iterator(),
+				   result.begin());
+		if (result.size() == 3)
+		{
+
+			AbstractVM::excecute(result[0], result[1], result[2]);
+		}
+	}
 };
 
 
