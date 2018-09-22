@@ -14,12 +14,24 @@ void printscreen(std::string string)
 
 int main(void)
 {
+	std::string line;
+	while (std::getline(std::cin, line))
+	{
+//		std::cout << line << std::endl;
+
+	}
+
 	AbstractVM abstractVM = AbstractVM();
 
 //	abstractVM.excecute("push", "int8", "100");
 //	std::string str = "push int8(100)";
-
-	abstractVM.setExpression("push int8(100)");
+	try {
+		abstractVM.setExpression("push int8(100)");
+	}
+	catch (std::exception &exception)
+	{
+		std::cout << "Error occured:!" << exception.what() << std::endl;
+	}
 	abstractVM.setExpression("push int8(200)");
 
 //	if (str.find(";;") == std::string::npos) {
