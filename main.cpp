@@ -7,6 +7,7 @@
 #include <iterator>
 
 
+
 void printscreen(std::string string)
 {
 	std::cout << string << "\n";
@@ -14,25 +15,48 @@ void printscreen(std::string string)
 
 int main(void)
 {
-	std::string line;
-	while (std::getline(std::cin, line))
-	{
+//	std::string line;
+//	while (std::getline(std::cin, line))
+//	{
 //		std::cout << line << std::endl;
-
-	}
-
+//
+//	}
 	AbstractVM abstractVM = AbstractVM();
+	std::string str;
 
-//	abstractVM.excecute("push", "int8", "100");
-//	std::string str = "push int8(100)";
-	try {
-		abstractVM.setExpression("push int8(100)");
+
+	while (getline(std::cin, str)) {
+//		std::cout << str << std::endl;
+		abstractVM.setExpression(str);
 	}
-	catch (std::exception &exception)
-	{
-		std::cout << "Error occured:!" << exception.what() << std::endl;
-	}
-	abstractVM.setExpression("push int8(200)");
+
+
+
+//	if (std::cin.bad()) {
+//		// IO error
+//		std::cout << "A";
+//	} else if (!std::cin.eof()) {
+//		std::cout << "B";
+//		// format error (not possible with getline but possible with operator>>)
+//	} else {
+//		std::cout << "C";
+//		// format error (not possible with getline but possible with operator>>)
+//		// or end of file (can't make the difference)
+//	}
+
+
+//	AbstractVM abstractVM = AbstractVM();
+//
+////	abstractVM.excecute("push", "int8", "100");
+////	std::string str = "push int8(100)";
+//	try {
+//		abstractVM.setExpression("push int8(100)");
+//	}
+//	catch (std::exception &exception)
+//	{
+//		std::cout << "Error occured:!" << exception.what() << std::endl;
+//	}
+//	abstractVM.setExpression("push int8(200)");
 
 //	if (str.find(";;") == std::string::npos) {
 //		str = str.substr(0, str.find(";"));
@@ -95,7 +119,7 @@ int main(void)
 //	{
 //		std::cout << "catch it!" << exception.what() << std::endl;
 //	}
-	abstractVM.dump();
+//	abstractVM.dump();
 
 //	abstractVM.assert("55");
 //abstractVM.add();
