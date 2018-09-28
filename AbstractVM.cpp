@@ -11,35 +11,64 @@ AbstractVM::AbstractVM()
     _operations["add"] = &AbstractVM::add;
 	_operations["dump"] = &AbstractVM::dump;
 	_operations["print"] = &AbstractVM::print;
+	_operations["pop"] = &AbstractVM::pop;
+	_operations["sub"] = &AbstractVM::sub;
+	_operations["sub"] = &AbstractVM::mul;
 
     _commands["push"] = &AbstractVM::push;
+	_commands["assert"] = &AbstractVM::assert;
 
     _types["int8"] = Int8;
     _types["int16"] = Int16;
     _types["int32"] = Int32;
     _types["float"] = Float;
     _types["double"] = Double;
-
 };
 
+void AbstractVM::push(std::string const &value, eOperandType type) {
+	const IOperand *operand = _factory.createOperand(type, value);
+	_container.push_front(operand);
+	_containerSize++;
+};
+
+void AbstractVM::assert(std::string const &value, eOperandType type)
+{
+	if (_container.front()->toString() == value && type)
+		std::cout << "Assertation succesfull\n";
+	else
+		throw Exception("Assertation failed");
+}
+
 void AbstractVM::add() {
-        _unstackElems();
-        _container.push_front(*_buff[1] + *_buff[0]);
-        delete (_buff[0]);
-        delete (_buff[1]);
+	if (_containerSize < 2) {
+		throw Exception("Unable to ADD, there are less than 2 elements in the stack!!!");
+	}
+	_unstackElems();
+	_container.push_front(*_buff[1] + *_buff[0]);
+	delete (_buff[0]);
+	delete (_buff[1]);
 }
 
-void AbstractVM::excecute(std::string operation) {
-//	if (_containerSize < 2) {
-//        throw Exception("Unable to ADD, there are less than 2 elements!!!");
-//    }
-    (this->*_operations[operation])();
+void AbstractVM::sub() {
+	if (_containerSize < 2) {
+		throw Exception("Unable to SUB, there are less than 2 elements in the stack!!!");
+	}
+	_unstackElems();
+	_container.push_front(*_buff[1] - *_buff[0]);
+	delete (_buff[0]);
+	delete (_buff[1]);
 }
 
-void AbstractVM::excecute(std::string command, std::string type, std::string num) {
-
-	(this->*_commands[command])(num, _types[type]);
+void AbstractVM::mul() {
+	if (_containerSize < 2) {
+		throw Exception("Unable to MUL, there are less than 2 elements in the stack!!!");
+	}
+	_unstackElems();
+	_container.push_front(*_buff[1] * *_buff[0]);
+	delete (_buff[0]);
+	delete (_buff[1]);
 }
+
 
 void AbstractVM::checkExpression(std::string expression) {
 	std::regex reg(	"(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
@@ -48,14 +77,10 @@ void AbstractVM::checkExpression(std::string expression) {
 	if (!std::regex_match(expression.begin(), expression.end(), reg))
 	{
 		throw Exception("Invalid expression!");
-//		std::cout << ("Invalid expression!\n");
-//		return;
 	}
-	return;
 }
 
-void AbstractVM::print(void)
-{
+void AbstractVM::print() {
 	if (_container.front()->getType() == Int8)
 		std::cout << "PRINTING: " << static_cast<char>(std::stoi(_container.front()->toString())) << std::endl;
 	else
@@ -63,17 +88,8 @@ void AbstractVM::print(void)
 
 }
 
-void AbstractVM::setExpression(std::string expression)
-{
-//	std::regex reg(	"(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
-//					   "((float|double)(\\([-]?\\d*[.]*?\\d+\\)))))|"
-//					   "(pop|dump|add|sub|mul|div|mod|print|exit|;;))(\\s*)?$");
-//	if (!std::regex_match(expression.begin(), expression.end(), reg))
-//	{
-//		throw Exception("Invalid expression!");
-//		std::cout << ("Invalid expression!\n");
-//		return;
-//	}
+void AbstractVM::setExpression(std::string expression) {
+	_line++;
 	try {
 		checkExpression(expression);
 	}
@@ -88,7 +104,7 @@ void AbstractVM::setExpression(std::string expression)
 	std::copy( std::sregex_token_iterator(expression.begin(), expression.end(), ws_re, -1),
 			   std::sregex_token_iterator(),
 			   result.begin());
-	if (result[2] != "")
+	if (!result[2].empty())
 	{
 		try {
 			AbstractVM::excecute(result[0], result[1], result[2]);
@@ -103,15 +119,31 @@ void AbstractVM::setExpression(std::string expression)
 		try {
 			AbstractVM::excecute(result[0]);
 		}
-		catch (std::exception &exception)
-		{
+		catch (std::exception &exception) {
 			std::cout << "catch it!" << exception.what() << std::endl;
 		}
 	}
 }
 
-void AbstractVM::dump(void) {
+void AbstractVM::dump() {
 	for (const auto iterator : _container) {
 		std::cout << stod(iterator->toString()) << std::endl;
 	}
 };
+
+void AbstractVM::pop() {
+	if (_containerSize < 1) {
+		throw Exception("Error : Pop on empty stack");
+	}
+	_container.pop_front();
+}
+
+void AbstractVM::excecute(std::string operation) {
+
+	(this->*_operations[operation])();
+}
+
+void AbstractVM::excecute(std::string command, std::string type, std::string num) {
+
+	(this->*_commands[command])(num, _types[type]);
+}

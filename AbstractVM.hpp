@@ -26,13 +26,13 @@ private:
 	std::forward_list<const IOperand *> _container;
 	size_t _containerSize = 0;
 	Factory _factory;
+	int _line = 0;
 
 	std::string result;
 
-	//array of two elems
 	const IOperand * _buff[2];
 
-	void _unstackElems(void) {
+	void _unstackElems() {
 		_buff[0] = _container.front();
 		_container.pop_front();
 		_buff[1] = _container.front();
@@ -54,29 +54,18 @@ class Exception : public std::exception
 			}
 	};
 
-	void push(std::string const &value, eOperandType type) {
-		const IOperand *operand = _factory.createOperand(type, value);
-		_container.push_front(operand);
-		_containerSize++;
-	};
+	void push(std::string const &value, eOperandType type);
 
 
-	void pop(void) {
-		_container.pop_front();
-	}
+	void pop();
 
 	void dump(void);
 
-	void assert(std::string const &value) const {
-		if (_container.front()->toString() == value)
-			std::cout << "Assertation succesfull\n";
-		else
-			std::cout << "Assertation FAILED\n";
-	}
+	void assert(std::string const &value, eOperandType type);
 
-	void add(void);
-
-
+	void add();
+	void sub();
+	void mul();
 	void print(void);
 
 	void excecute(std::string operation);
@@ -89,8 +78,3 @@ class Exception : public std::exception
 
 
 #endif //AVM_ABSTRACTVM_HPP
-
-//		for (std::forward_list<const IOperand *>::iterator it = _container.begin(); it!=_container.end(); ++it) {
-//			std::cout << stod((*it)->toString()) << std::endl;
-//			std::cout << stod() << std::endl;
-//		}
