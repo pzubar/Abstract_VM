@@ -35,5 +35,6 @@ void AbstractVM::excecute(std::string operation) {
 }
 
 void AbstractVM::excecute(std::string command, std::string type, std::string num) {
-    (this->*_commands[command])(num, _types[type]);
+
+	(this->*_commands[command])(num, _types[type]);
 }

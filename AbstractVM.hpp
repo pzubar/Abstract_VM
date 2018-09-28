@@ -108,7 +108,6 @@ class Exception : public std::exception
 				   result.begin());
 		if (result.size() == 3)
 		{
-
 			AbstractVM::excecute(result[0], result[1], result[2]);
 		}
 	}
