@@ -81,10 +81,10 @@ void AbstractVM::checkExpression(std::string expression) {
 }
 
 void AbstractVM::print() {
-	if (_container.front()->getType() == Int8)
+	if (_containerSize && _container.front()->getType() == Int8)
 		std::cout << "PRINTING: " << static_cast<char>(std::stoi(_container.front()->toString())) << std::endl;
 	else
-		std::cout << "Printing in ascii FAILED\n";
+		throw Exception("Printing failed");
 
 }
 
