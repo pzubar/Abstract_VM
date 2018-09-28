@@ -107,7 +107,7 @@ void AbstractVM::setExpression(std::string expression) {
 	if (!result[2].empty())
 	{
 		try {
-			AbstractVM::excecute(result[0], result[1], result[2]);
+			AbstractVM::execute(result[0], result[1], result[2]);
 		}
 		catch (std::exception &exception)
 		{
@@ -117,7 +117,7 @@ void AbstractVM::setExpression(std::string expression) {
 	else
 	{
 		try {
-			AbstractVM::excecute(result[0]);
+			AbstractVM::execute(result[0]);
 		}
 		catch (std::exception &exception) {
 			std::cout << "catch it!" << exception.what() << std::endl;
@@ -138,12 +138,12 @@ void AbstractVM::pop() {
 	_container.pop_front();
 }
 
-void AbstractVM::excecute(std::string operation) {
+void AbstractVM::execute(std::string operation) {
 
 	(this->*_operations[operation])();
 }
 
-void AbstractVM::excecute(std::string command, std::string type, std::string num) {
+void AbstractVM::execute(std::string command, std::string type, std::string num) {
 
 	(this->*_commands[command])(num, _types[type]);
 }

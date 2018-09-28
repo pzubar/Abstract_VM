@@ -68,9 +68,9 @@ class Exception : public std::exception
 	void mul();
 	void print(void);
 
-	void excecute(std::string operation);
+	void execute(std::string operation);
 
-	void excecute(std::string command, std::string type, std::string num);
+	void execute(std::string command, std::string type, std::string num);
 
 	void setExpression(std::string expression);
 	void checkExpression(std::string expression);
