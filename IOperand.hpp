@@ -1,5 +1,5 @@
 //
-// Created by Petro ZUBAR on 02.09.2018.
+// Created by Petro ZUBAR on 02.09.2018. with help Kmykhail
 //
 
 #ifndef AVM_IOPERAND_HPP
