@@ -14,6 +14,7 @@
 #include <exception>
 #include <regex>
 #include <array>
+#include <sstream>
 
 //TODO - add exceptions
 
@@ -59,21 +60,21 @@ class Exception : public std::exception
 
 	void pop();
 
-	void dump(void);
+	void dump();
 
 	void assert(std::string const &value, eOperandType type);
 
 	void add();
 	void sub();
 	void mul();
-	void print(void);
+	void print();
 
 	void execute(std::string operation);
 
 	void execute(std::string command, std::string type, std::string num);
 
 	void setExpression(std::string expression);
-	void checkExpression(std::string expression);
+	std::string checkExpression(std::string expression);
 };
 
 

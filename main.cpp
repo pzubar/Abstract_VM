@@ -1,21 +1,8 @@
-#include <iostream>
 #include "AbstractVM.hpp"
-#include "Operand.hpp"
-#include "Factory.hpp"
-#include <vector>
-#include <algorithm>
-#include <iterator>
 
-
-
-void printscreen(std::string string)
-{
-	std::cout << string << "\n";
-}
 
 int main(void)
 {
-
 	AbstractVM abstractVM = AbstractVM();
 	std::string str;
 

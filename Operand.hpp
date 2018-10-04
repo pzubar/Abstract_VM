@@ -18,6 +18,9 @@ class Operand : public IOperand
 	Type _value;
 	std::string _strval;
 	eOperandType _type;
+	bool _isExit = false;
+	bool _fromFile = false;
+
 	Operand();
 	eOperandType _getBiggerType(IOperand const &rhs) const{
 		return static_cast<eOperandType>(std::max(this->getPrecision(), rhs.getPrecision()));

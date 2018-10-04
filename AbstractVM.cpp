@@ -13,7 +13,8 @@ AbstractVM::AbstractVM()
 	_operations["print"] = &AbstractVM::print;
 	_operations["pop"] = &AbstractVM::pop;
 	_operations["sub"] = &AbstractVM::sub;
-	_operations["sub"] = &AbstractVM::mul;
+	_operations["mul"] = &AbstractVM::mul;
+//    _operations["mul"] = &AbstractVM::mul;
 
     _commands["push"] = &AbstractVM::push;
 	_commands["assert"] = &AbstractVM::assert;
@@ -70,14 +71,27 @@ void AbstractVM::mul() {
 }
 
 
-void AbstractVM::checkExpression(std::string expression) {
+std::string AbstractVM::checkExpression(std::string expression) {
+	if (expression == ";;")
+	{
+		std::cout << "exit requested\n";
+		return NULL;
+	}
+//	expression = expression.substr(expression.find(";") + 1);
+	expression = expression.substr(0, expression.find(";", 0));
+	std::cout << "expression: " << expression << std::endl;
 	std::regex reg(	"(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
-					   "((float|double)(\\([-]?\\d*[.]*?\\d+\\)))))|"
+					   "((float|double)(\\([-]?\\d*[,]*?\\d+\\)))))|"
 					   "(pop|dump|add|sub|mul|div|mod|print|exit|;;))(\\s*)?$");
 	if (!std::regex_match(expression.begin(), expression.end(), reg))
 	{
-		throw Exception("Invalid expression!");
+//		std::stringstream result;
+//		result << "Invalid expression: \"" << expression << "\"";
+//		std::string s = result.str();
+//		const char* p = s.c_str();
+		throw Exception("Invalid expression");
 	}
+	return expression;
 }
 
 void AbstractVM::print() {
@@ -93,12 +107,11 @@ void AbstractVM::setExpression(std::string expression) {
 	try {
 		checkExpression(expression);
 	}
-	catch (std::exception &exception)
-	{
-		std::cout << "catch it!" << exception.what() << std::endl;
+	catch (std::exception &exception) {
+		std::cout << "Catch it: " << exception.what() << std::endl;
 		return;
 	}
-	std::array<std::string, 3> result = { "", "", "" };
+	std::array<std::string, 3> result = {"", "", ""};
 
 	std::regex ws_re("\\s|\\(|\\)");
 	std::copy( std::sregex_token_iterator(expression.begin(), expression.end(), ws_re, -1),
