@@ -29,8 +29,7 @@ private:
 	Factory _factory;
 	int _line = 0;
 
-	std::string result;
-
+    std::stringstream result;
 	const IOperand * _buff[2];
 
 	void _unstackElems() {
