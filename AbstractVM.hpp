@@ -28,8 +28,10 @@ private:
 	size_t _containerSize = 0;
 	Factory _factory;
 	int _line = 0;
+    bool _isExit = false;
+    bool _fromFile = false;
 
-    std::stringstream result;
+    std::string _result;
 	const IOperand * _buff[2];
 
 	void _unstackElems() {
@@ -67,6 +69,8 @@ class Exception : public std::exception
 	void sub();
 	void mul();
 	void print();
+    void exit();
+    void terminate();
 
 	void execute(std::string operation);
 

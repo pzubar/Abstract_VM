@@ -14,7 +14,7 @@ AbstractVM::AbstractVM()
 	_operations["pop"] = &AbstractVM::pop;
 	_operations["sub"] = &AbstractVM::sub;
 	_operations["mul"] = &AbstractVM::mul;
-//    _operations["mul"] = &AbstractVM::mul;
+    _operations["exit"] = &AbstractVM::exit;
 
     _commands["push"] = &AbstractVM::push;
 	_commands["assert"] = &AbstractVM::assert;
@@ -74,7 +74,11 @@ void AbstractVM::mul() {
 std::string AbstractVM::checkExpression(std::string expression) {
 	if (expression == ";;")
 	{
-		std::cout << "exit requested\n";
+		if (_isExit)
+			std::cout << "Normal exit\n";
+		else
+			throw Exception("Invalid termination!");
+		//terminate
 		return NULL;
 	}
 //	expression = expression.substr(expression.find(";") + 1);
@@ -94,13 +98,7 @@ std::string AbstractVM::checkExpression(std::string expression) {
 	return expression;
 }
 
-void AbstractVM::print() {
-	if (_containerSize && _container.front()->getType() == Int8)
-		std::cout << "PRINTING: " << static_cast<char>(std::stoi(_container.front()->toString())) << std::endl;
-	else
-		throw Exception("Printing failed");
 
-}
 
 void AbstractVM::setExpression(std::string expression) {
 	_line++;
@@ -109,6 +107,10 @@ void AbstractVM::setExpression(std::string expression) {
 	}
 	catch (std::exception &exception) {
 		std::cout << "Catch it: " << exception.what() << std::endl;
+		if (std::strcmp(exception.what(), "Invalid termination!") == 0)
+		{
+
+		}
 		return;
 	}
 	std::array<std::string, 3> result = {"", "", ""};
@@ -150,6 +152,29 @@ void AbstractVM::pop() {
 	}
 	_container.pop_front();
 }
+
+void AbstractVM::print() {
+	if (_containerSize && _container.front()->getType() == Int8)
+		std::cout << "PRINTING: " << static_cast<char>(std::stoi(_container.front()->toString())) << std::endl;
+	else
+		throw Exception("Printing failed");
+}
+
+void AbstractVM::exit() {
+	if (_fromFile)
+	{
+		std::cout << "!!!Exiting requested\n";
+	}
+	else
+	{
+		_isExit = true;
+	}
+}
+
+void AbstractVM::terminate() {
+	std::cout << _result;
+}
+
 
 void AbstractVM::execute(std::string operation) {
 
