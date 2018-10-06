@@ -43,17 +43,42 @@ class Exception: public std::exception
                 }
                 explicit InputException(const std::string& message) : std::logic_error(message)
                 {
-                    _msg = message;
+                    _msg = "Input Exception: " + message;
                 }
-                virtual ~InputException() throw (){}
-
+                InputException(const InputException &rhs) : std::logic_error(rhs)
+                {
+                    *this = rhs;
+                }
+                virtual ~InputException() _NOEXCEPT {};
+                InputException &operator=(const InputException &rhs) _NOEXCEPT {
+                    _msg = rhs._msg;
+                    return *this;
+                }
                 virtual const char* what() const throw (){
                     return _msg.c_str();
                 }
             private:
                 std::string _msg;
         };
-
+        class OverflowException: public std::overflow_error
+        {
+            public:
+                explicit OverflowException(const char* message) : std::overflow_error(message)
+                {
+                    _msg = message;
+                }
+                explicit OverflowException(const std::string& message) : std::overflow_error(message)
+                {
+                    _msg = message;
+                }
+                virtual ~OverflowException() throw (){}
+//                OverflowException &operator=(const exception &ob) throw(){};
+                virtual const char* what() const throw (){
+                    return _msg.c_str();
+                }
+            private:
+                std::string _msg;
+        };
 
 
     /** Constructor (C strings).

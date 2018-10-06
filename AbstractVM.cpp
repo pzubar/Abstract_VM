@@ -89,7 +89,7 @@ std::string AbstractVM::checkExpression(std::string expression) {
 	if (!std::regex_match(expression.begin(), expression.end(), reg))
 	{
 		std::stringstream error;
-		error << "Line " << _line << ": Invalid input: \"" << expression << "\"";
+		error << "Line " << _line << ": Unknown instruction or invalid input: \"" << expression << "\"";
 		throw Exception::InputException(error.str());
 	}
 	return expression;
@@ -103,7 +103,7 @@ void AbstractVM::setExpression(std::string expression) {
 		checkExpression(expression);
 	}
 	catch (std::exception &exception) {
-		std::cout << "Catch it: " << exception.what() << std::endl;
+		std::cout << exception.what() << std::endl;
 		if (std::strcmp(exception.what(), "Invalid termination!") == 0)
 		{
 
@@ -132,7 +132,7 @@ void AbstractVM::setExpression(std::string expression) {
 			AbstractVM::execute(result[0]);
 		}
 		catch (std::exception &exception) {
-			std::cout << "catch it!" << exception.what() << std::endl;
+			std::cout << exception.what() << std::endl;
 		}
 	}
 }
