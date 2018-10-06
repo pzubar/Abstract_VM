@@ -6,7 +6,9 @@
 
 IOperand const * Factory::createInt8( std::string const & value ) const {
     if (stod(value) > CHAR_MAX)
-        throw Exception::OverflowException("Int8 overflow");
+        throw Exception::OverflowException("Int8 overflow, element won't be added to stack");
+    if (stod(value) < CHAR_MAX)
+        throw Exception::UnderflowException("Int8 underflow, element won't be added to stack");
     return new Operand<int8_t>(std::stod(value), Int8);
 };
 IOperand const * Factory::createInt16( std::string const & value ) const {

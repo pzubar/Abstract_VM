@@ -48,7 +48,7 @@ class Exception: public std::exception
                 }
                 explicit OverflowException(const std::string& message) : std::overflow_error(message)
                 {
-                    _msg = "Input Exception: " + message;
+                    _msg = message;
                 }
                 OverflowException(const OverflowException &rhs) : std::overflow_error(rhs)
                 {
@@ -61,12 +61,40 @@ class Exception: public std::exception
                 }
                 virtual const char* what() const _NOEXCEPT
                 {
-                    return _msg.c_str();
+                    std::string result = "Overflow Exception: " + _msg;
+                    return result.c_str();
                 }
             private:
                 std::string _msg;
         };
-
+    class UnderflowException: public std::underflow_error
+    {
+    public:
+        explicit UnderflowException(const char* message) : std::underflow_error(message)
+        {
+            _msg = message;
+        }
+        explicit UnderflowException(const std::string& message) : std::underflow_error(message)
+        {
+            _msg = message;
+        }
+        UnderflowException(const UnderflowException &rhs) : std::underflow_error(rhs)
+        {
+            *this = rhs;
+        }
+        virtual ~UnderflowException() _NOEXCEPT {};
+        UnderflowException &operator=(const UnderflowException &rhs) _NOEXCEPT {
+            _msg = rhs._msg;
+            return *this;
+        }
+        virtual const char* what() const _NOEXCEPT
+        {
+            std::string result = "Underflow Exception: " + _msg;
+            return result.c_str();
+        }
+    private:
+        std::string _msg;
+    };
 
     /** Constructor (C strings).
      *  @param message C-style string error message.
