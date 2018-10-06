@@ -6,6 +6,8 @@
 #define ABSTRACTVM_FACTORY_HPP
 
 #include "Operand.hpp"
+#include <climits>
+#include "Exception.hpp"
 
 class Factory
 {

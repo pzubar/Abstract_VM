@@ -25,6 +25,6 @@ int main(void)
 //		// or end of file (can't make the difference)
 //	}
 
-//	system("leaks avm");
+//
 	return 0;
 }

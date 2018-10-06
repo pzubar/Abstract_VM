@@ -3,4 +3,4 @@ project(AbstractVM)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(avm main.cpp AbstractVM.cpp AbstractVM.hpp Operand.cpp Operand.hpp IOperand.hpp Factory.cpp Factory.hpp)
+add_executable(avm main.cpp AbstractVM.cpp AbstractVM.hpp Operand.cpp Operand.hpp IOperand.hpp Factory.cpp Factory.hpp Exception.cpp Exception.hpp)

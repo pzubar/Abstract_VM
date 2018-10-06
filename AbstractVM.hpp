@@ -17,6 +17,7 @@
 #include <sstream>
 
 //TODO - add exceptions
+#include "Exception.hpp"
 
 class AbstractVM {
 private:
@@ -44,20 +45,9 @@ private:
 public:
 	AbstractVM();
 	~AbstractVM() {};
-class Exception : public std::exception
-	{
-		private:
-			const char *_msg;
-		public:
-			Exception(const char *msg): _msg(msg){};
-			virtual const char* what() const throw()
-			{
-				return (_msg);
-			}
-	};
+
 
 	void push(std::string const &value, eOperandType type);
-
 
 	void pop();
 

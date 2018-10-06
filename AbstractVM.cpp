@@ -74,14 +74,13 @@ void AbstractVM::mul() {
 std::string AbstractVM::checkExpression(std::string expression) {
 	if (expression == ";;")
 	{
-		if (_isExit)
-			std::cout << "Normal exit\n";
+		if (_isExit) {
+            terminate();
+        }
 		else
 			throw Exception("Invalid termination!");
-		//terminate
 		return NULL;
 	}
-//	expression = expression.substr(expression.find(";") + 1);
 	expression = expression.substr(0, expression.find(";", 0));
 	std::cout << "expression: " << expression << std::endl;
 	std::regex reg(	"(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
@@ -89,11 +88,9 @@ std::string AbstractVM::checkExpression(std::string expression) {
 					   "(pop|dump|add|sub|mul|div|mod|print|exit|;;))(\\s*)?$");
 	if (!std::regex_match(expression.begin(), expression.end(), reg))
 	{
-//		std::stringstream result;
-//		result << "Invalid expression: \"" << expression << "\"";
-//		std::string s = result.str();
-//		const char* p = s.c_str();
-		throw Exception("Invalid expression");
+		std::stringstream error;
+		error << "Line " << _line << ": Invalid input: \"" << expression << "\"";
+		throw Exception::InputException(error.str());
 	}
 	return expression;
 }
@@ -173,8 +170,9 @@ void AbstractVM::exit() {
 
 void AbstractVM::terminate() {
 	std::cout << _result;
+    system("leaks avm");
+	exit();
 }
-
 
 void AbstractVM::execute(std::string operation) {
 
