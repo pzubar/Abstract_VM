@@ -5,8 +5,8 @@
 #include "Factory.hpp"
 
 IOperand const * Factory::createInt8( std::string const & value ) const {
-    if (stod(value) < CHAR_MIN || stod(value) > CHAR_MAX)
-        throw Exception("Unable to ADD, there are less than 2 elements in the stack!!!");
+    if (stod(value) > CHAR_MAX)
+        throw Exception::OverflowException("Int8 overflow");
     return new Operand<int8_t>(std::stod(value), Int8);
 };
 IOperand const * Factory::createInt16( std::string const & value ) const {

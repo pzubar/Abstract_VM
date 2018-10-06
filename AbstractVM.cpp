@@ -8,28 +8,19 @@ AbstractVM::AbstractVM()
 {
     _factory = Factory();
 
-    _operations["add"] = &AbstractVM::add;
-	_operations["dump"] = &AbstractVM::dump;
-	_operations["print"] = &AbstractVM::print;
-	_operations["pop"] = &AbstractVM::pop;
-	_operations["sub"] = &AbstractVM::sub;
-	_operations["mul"] = &AbstractVM::mul;
-    _operations["exit"] = &AbstractVM::exit;
-
     _commands["push"] = &AbstractVM::push;
 	_commands["assert"] = &AbstractVM::assert;
-
-    _types["int8"] = Int8;
-    _types["int16"] = Int16;
-    _types["int32"] = Int32;
-    _types["float"] = Float;
-    _types["double"] = Double;
 };
 
 void AbstractVM::push(std::string const &value, eOperandType type) {
-	const IOperand *operand = _factory.createOperand(type, value);
-	_container.push_front(operand);
-	_containerSize++;
+	try {
+		const IOperand *operand = _factory.createOperand(type, value);
+		_container.push_front(operand);
+		_containerSize++;
+	}
+	catch (std::exception &exception) {
+		std::cout << exception.what() << std::endl;
+	};
 };
 
 void AbstractVM::assert(std::string const &value, eOperandType type)
@@ -175,11 +166,30 @@ void AbstractVM::terminate() {
 }
 
 void AbstractVM::execute(std::string operation) {
-
-	(this->*_operations[operation])();
+	std::map<std::string, void (AbstractVM::*)(void)> operations =
+	{
+		{"add", &AbstractVM::add},
+		{"dump", &AbstractVM::dump},
+		{"print", &AbstractVM::print},
+		{"pop", &AbstractVM::pop},
+		{"sub", &AbstractVM::sub},
+		{"mul", &AbstractVM::mul},
+		{"exit", &AbstractVM::exit},
+	};
+	(this->*operations[operation])();
 }
 
 void AbstractVM::execute(std::string command, std::string type, std::string num) {
 
-	(this->*_commands[command])(num, _types[type]);
+	std::map<std::string, eOperandType> types =
+	{
+		{"int8", Int8},
+		{"int16", Int16},
+		{"int32", Int32},
+		{"float", Float},
+		{"double", Double}
+	};
+
+
+	(this->*_commands[command])(num, types[type]);
 }

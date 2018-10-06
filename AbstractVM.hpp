@@ -21,9 +21,8 @@
 
 class AbstractVM {
 private:
-    std::map<std::string, void (AbstractVM::*)(void)> _operations;
+
 	std::map<std::string, void (AbstractVM::*)(std::string const &, eOperandType type)> _commands;
-	std::map<std::string, eOperandType> _types;
 
 	std::forward_list<const IOperand *> _container;
 	size_t _containerSize = 0;

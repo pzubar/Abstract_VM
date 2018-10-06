@@ -9,28 +9,6 @@
 #include <stdexcept>
 #include <iostream>
 
-//class Exception : public std::exception
-//{
-//private:
-//    const char *_msg;
-//public:
-//
-//class InputError : public std::invalid_argument
-//{
-//    private:
-//        const char *_msg;
-//    public:
-////        InputError(){};
-//        explicit InputError( const std::string& what_arg );
-//};
-//
-//    Exception(const char *msg): _msg(msg){};
-//    virtual const char* what() const throw()
-//    {
-//        return (_msg);
-//    }
-//};
-
 class Exception: public std::exception
 {
     public:
@@ -54,7 +32,8 @@ class Exception: public std::exception
                     _msg = rhs._msg;
                     return *this;
                 }
-                virtual const char* what() const throw (){
+                virtual const char* what() const _NOEXCEPT
+                {
                     return _msg.c_str();
                 }
             private:
@@ -69,11 +48,19 @@ class Exception: public std::exception
                 }
                 explicit OverflowException(const std::string& message) : std::overflow_error(message)
                 {
-                    _msg = message;
+                    _msg = "Input Exception: " + message;
                 }
-                virtual ~OverflowException() throw (){}
-//                OverflowException &operator=(const exception &ob) throw(){};
-                virtual const char* what() const throw (){
+                OverflowException(const OverflowException &rhs) : std::overflow_error(rhs)
+                {
+                    *this = rhs;
+                }
+                virtual ~OverflowException() _NOEXCEPT {};
+                OverflowException &operator=(const OverflowException &rhs) _NOEXCEPT {
+                    _msg = rhs._msg;
+                    return *this;
+                }
+                virtual const char* what() const _NOEXCEPT
+                {
                     return _msg.c_str();
                 }
             private:
