@@ -27,7 +27,7 @@ class Exception: public std::exception
                 {
                     *this = rhs;
                 }
-                virtual ~InputException() _NOEXCEPT {};
+                virtual ~InputException() = default;
                 InputException &operator=(const InputException &rhs) _NOEXCEPT {
                     _msg = rhs._msg;
                     return *this;
@@ -117,14 +117,14 @@ class Exception: public std::exception
     /** Destructor.
      * Virtual to allow for subclassing.
      */
-    virtual ~Exception() throw (){}
+    virtual ~Exception() _NOEXCEPT{}
 
     /** Returns a pointer to the (constant) error description.
      *  @return A pointer to a const char*. The underlying memory
      *          is in posession of the Exception object. Callers must
      *          not attempt to free the memory.
      */
-    virtual const char* what() const throw (){
+    virtual const char* what() const _NOEXCEPT {
         return msg_.c_str();
     }
 
