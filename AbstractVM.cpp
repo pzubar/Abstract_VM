@@ -35,22 +35,28 @@ void AbstractVM::assert(std::string const &value, eOperandType type)
 }
 
 void AbstractVM::add() {
+	checkStack();
+	_unstackElems();
+	_container.push_front(*_buff[1] + *_buff[0]);
+}
+
+void AbstractVM::sub() {
 	try {
-        checkStack();
+		checkStack();
 	}
 	catch (Exception::SmallStackException &exception) {
-        std::cout << "Line " << _line << ": Less that two values in stack: "
-                  << exception.what() << std::endl;
+		std::cout << "Line " << _line << ": Less that two values in stack: "
+				  << exception.what() << std::endl;
 	}
 	_unstackElems();
 	try {
-        _container.push_front(*_buff[1] + *_buff[0]);
+		_container.push_front(*_buff[1] - *_buff[0]);
 	}
-    catch (Exception::OverflowException &exception) {
-        std::cout << "Line " << _line << ": Overflow exception: "
-                  << exception.what() << std::endl;
+	catch (Exception::OverflowException &exception) {
+		std::cout << "Line " << _line << ": Overflow exception: "
+				  << exception.what() << std::endl;
 		_stackBack();
-    }
+	}
 	catch (Exception::UnderflowException &exception) {
 		std::cout << "Line " << _line << ": Underflow exception: "
 				  << exception.what() << std::endl;
@@ -60,26 +66,42 @@ void AbstractVM::add() {
 	delete (_buff[1]);
 }
 
-void AbstractVM::sub() {
-
-	_unstackElems();
-	_container.push_front(*_buff[1] - *_buff[0]);
-	delete (_buff[0]);
-	delete (_buff[1]);
-}
-
 void AbstractVM::mul() {
-
+	try {
+		checkStack();
+	}
+	catch (Exception::SmallStackException &exception) {
+		std::cout << "Line " << _line << ": Less that two values in stack: "
+				  << exception.what() << std::endl;
+	}
 	_unstackElems();
-	_container.push_front(*_buff[1] * *_buff[0]);
+	try {
+		_container.push_front(*_buff[1] * *_buff[0]);
+	}
+	catch (Exception::OverflowException &exception) {
+		std::cout << "Line " << _line << ": Overflow exception: "
+				  << exception.what() << std::endl;
+		_stackBack();
+	}
+	catch (Exception::UnderflowException &exception) {
+		std::cout << "Line " << _line << ": Underflow exception: "
+				  << exception.what() << std::endl;
+		_stackBack();
+	}
 	delete (_buff[0]);
 	delete (_buff[1]);
 }
 
 void AbstractVM::div() {
-
 	if (_buff[0]->toString() == "0") {
 		throw Exception::DivisionByZeroException("Division by zero");
+	}
+	try {
+		checkStack();
+	}
+	catch (Exception::SmallStackException &exception) {
+		std::cout << "Line " << _line << ": Less that two values in stack: "
+				  << exception.what() << std::endl;
 	}
 
 	_unstackElems();
@@ -109,7 +131,7 @@ std::string AbstractVM::checkExpression(std::string expression) {
             terminate();
         }
 		else
-			throw Exception::InputException("Invalid termination!"); //!
+			throw Exception::WrongExitException("The program doesn’t have an exit instruction");
 		return NULL;
 	}
 	expression = expression.substr(0, expression.find(";", 0));
@@ -119,14 +141,10 @@ std::string AbstractVM::checkExpression(std::string expression) {
 					   "(pop|dump|add|sub|mul|div|mod|print|exit|;;))(\\s*)?$");
 	if (!std::regex_match(expression.begin(), expression.end(), reg))
 	{
-		std::stringstream error;
-		error << "Line " << _line << ": Unknown instruction or invalid input: \"" << expression << "\"";
-		throw Exception::InputException(error.str());
+		throw Exception::InputException("Unknown instruction or invalid input");
 	}
 	return expression;
 }
-
-
 
 void AbstractVM::setExpression(std::string expression) {
 	_line++;
@@ -197,14 +215,14 @@ void AbstractVM::exit() {
 void AbstractVM::terminate() {
 	if (!_isExit)
 		throw (Exception::WrongExitException("The program does not have an exit instruction"));
-	std::cout << _result.str();
+	std::cout << _output;
     system("leaks avm");
 	exit();
 }
 
 void AbstractVM::execute(std::string operation) {
 	if (_isExit)
-		throw (Exception::WrongExitException("The program does not have an exit instruction"));
+		throw (Exception::WrongExitException("The program has an exit instruction"));
 	std::map<std::string, void (AbstractVM::*)(void)> operations =
 	{
 		{"add", &AbstractVM::add},
@@ -217,7 +235,30 @@ void AbstractVM::execute(std::string operation) {
 		{"mod", &AbstractVM::mod},
 		{"exit", &AbstractVM::exit},
 	};
-	(this->*operations[operation])();
+	try {
+		(this->*operations[operation])();
+		if (_buff[0])
+		{
+			delete (_buff[0]);
+			_buff[0] = NULL;
+			delete (_buff[1]);
+			_buff[1] = NULL;
+		}
+	}
+	catch (Exception::SmallStackException &exception) {
+		std::cout << "Line " << _line << ": Less that two values in stack: "
+				  << exception.what() << std::endl;
+	}
+	catch (Exception::OverflowException &exception) {
+		std::cout << "Line " << _line << ": Overflow exception: "
+				  << exception.what() << std::endl;
+		_stackBack();
+	}
+	catch (Exception::UnderflowException &exception) {
+		std::cout << "Line " << _line << ": Underflow exception: "
+				  << exception.what() << std::endl;
+		_stackBack();
+	}
 }
 
 void AbstractVM::execute(std::string command, std::string type, std::string num) {

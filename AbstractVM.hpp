@@ -14,8 +14,6 @@
 #include <sstream>
 #include "Factory.hpp"
 #include "Operand.hpp"
-
-//TODO - add exceptions
 #include "Exception.hpp"
 
 class AbstractVM {
@@ -23,14 +21,13 @@ private:
 
 	std::map<std::string, void (AbstractVM::*)(std::string const &, eOperandType type)> _commands;
 
-	std::forward_list<const IOperand *> _container;
-	size_t _containerSize = 0;
-	Factory _factory;
-	int _line = 0;
-    bool _isExit = false;
-    bool _fromFile = false;
-
-    std::ostringstream _result;
+	std::forward_list<const IOperand *>	_container;
+	size_t		_containerSize = 0;
+	Factory		_factory;
+	int			_line = 0;
+    bool		_isExit = false;
+    bool		_fromFile = false;
+    std::string	_output;
 	const IOperand * _buff[2];
 
 	void _unstackElems() {
@@ -46,7 +43,7 @@ private:
 
 public:
 	AbstractVM();
-	~AbstractVM() = default;
+	~AbstractVM(){};
 	void push(std::string const &value, eOperandType type);
 	void pop();
 	void dump();

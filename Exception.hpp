@@ -28,7 +28,7 @@ class Exception
                 {
                     *this = rhs;
                 }
-                ~InputException() override = default;
+                virtual ~InputException()= default;
                 InputException &operator=(const InputException &rhs) _NOEXCEPT {
                     _msg = rhs._msg;
                     return *this;
@@ -188,7 +188,7 @@ class Exception
     class WrongExitException : public std::exception {
         std::logic_error _error;
     public:
-        explicit NoExitException(const char *msg) : _error(msg) {}
+        explicit WrongExitException(const char *msg) : _error(msg) {}
         const char *what() const noexcept override {
             return _error.what();
         }
