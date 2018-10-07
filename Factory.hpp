@@ -5,8 +5,10 @@
 #ifndef ABSTRACTVM_FACTORY_HPP
 #define ABSTRACTVM_FACTORY_HPP
 
-#include "Operand.hpp"
+
 #include <climits>
+#include <float.h>
+#include "Operand.hpp"
 #include "Exception.hpp"
 
 class Factory
