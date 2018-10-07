@@ -18,9 +18,12 @@ void AbstractVM::push(std::string const &value, eOperandType type) {
 		_container.push_front(operand);
 		_containerSize++;
 	}
-	catch (std::exception &exception) {
-		std::cout << exception.what() << std::endl;
-	};
+	catch (Exception::OverflowException &exception) {
+		std::cout << "Line " << _line << ": Overflow exception: " << exception.what() << std::endl;
+	}
+    catch (Exception::UnderflowException &exception) {
+        std::cout << "Line " << _line << ": Underflow exception: " << exception.what() << std::endl;
+    }
 };
 
 void AbstractVM::assert(std::string const &value, eOperandType type)

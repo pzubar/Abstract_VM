@@ -5,13 +5,17 @@
 #include "Factory.hpp"
 
 IOperand const * Factory::createInt8( std::string const & value ) const {
-    if (stod(value) > CHAR_MAX)
+    if (stod(value) > INT8_MAX)
         throw Exception::OverflowException("Int8 overflow, element won't be added to stack");
-    if (stod(value) < CHAR_MAX)
+    if (stod(value) < INT8_MIN)
         throw Exception::UnderflowException("Int8 underflow, element won't be added to stack");
     return new Operand<int8_t>(std::stod(value), Int8);
 };
 IOperand const * Factory::createInt16( std::string const & value ) const {
+    if (stod(value) > INT16_MAX)
+        throw Exception::OverflowException("Int16 overflow, element won't be added to stack");
+    if (stod(value) < INT16_MIN)
+        throw Exception::UnderflowException("Int16 underflow, element won't be added to stack");
     return new Operand<int16_t>(std::stod(value), Int16);
 };
 IOperand const * Factory::createInt32( std::string const & value ) const {

@@ -12,18 +12,18 @@
 class Exception: public std::exception
 {
     public:
-        class InputException: public std::logic_error
+        class InputException: public std::invalid_argument
         {
             public:
-                explicit InputException(const char* message) : std::logic_error(message)
+                explicit InputException(const char* message) : std::invalid_argument(message)
                 {
                     _msg = message;
                 }
-                explicit InputException(const std::string& message) : std::logic_error(message)
+                explicit InputException(const std::string& message) : std::invalid_argument(message)
                 {
-                    _msg = "Input Exception: " + message;
+                    _msg = message;
                 }
-                InputException(const InputException &rhs) : std::logic_error(rhs)
+                InputException(const InputException &rhs) : std::invalid_argument(rhs)
                 {
                     *this = rhs;
                 }
@@ -61,39 +61,65 @@ class Exception: public std::exception
                 }
                 virtual const char* what() const _NOEXCEPT
                 {
-                    std::string result = "Overflow Exception: " + _msg;
-                    return result.c_str();
+                    return _msg.c_str();
                 }
             private:
                 std::string _msg;
         };
     class UnderflowException: public std::underflow_error
     {
-    public:
-        explicit UnderflowException(const char* message) : std::underflow_error(message)
-        {
-            _msg = message;
-        }
-        explicit UnderflowException(const std::string& message) : std::underflow_error(message)
-        {
-            _msg = message;
-        }
-        UnderflowException(const UnderflowException &rhs) : std::underflow_error(rhs)
-        {
-            *this = rhs;
-        }
-        virtual ~UnderflowException() _NOEXCEPT {};
-        UnderflowException &operator=(const UnderflowException &rhs) _NOEXCEPT {
-            _msg = rhs._msg;
-            return *this;
-        }
-        virtual const char* what() const _NOEXCEPT
-        {
-            std::string result = "Underflow Exception: " + _msg;
-            return result.c_str();
-        }
-    private:
-        std::string _msg;
+        public:
+            explicit UnderflowException(const char* message) : std::underflow_error(message)
+            {
+                _msg = message;
+            }
+            explicit UnderflowException(const std::string& message) : std::underflow_error(message)
+            {
+                _msg = message;
+            }
+            UnderflowException(const UnderflowException &rhs) : std::underflow_error(rhs)
+            {
+                *this = rhs;
+            }
+            virtual ~UnderflowException() _NOEXCEPT {};
+            UnderflowException &operator=(const UnderflowException &rhs) _NOEXCEPT {
+                _msg = rhs._msg;
+                return *this;
+            }
+            virtual const char* what() const _NOEXCEPT
+            {
+                return  _msg.c_str();
+            }
+        private:
+            std::string _msg;
+    };
+
+    class EmptyStackException: public std::runtime_error
+    {
+        public:
+            explicit EmptyStackException(const char* message) : std::runtime_error(message)
+            {
+                _msg = message;
+            }
+            explicit EmptyStackException(const std::string& message) : std::runtime_error(message)
+            {
+                _msg = message;
+            }
+            EmptyStackException(const EmptyStackException &rhs) : std::runtime_error(rhs)
+            {
+                *this = rhs;
+            }
+            virtual ~EmptyStackException() _NOEXCEPT {};
+            EmptyStackException &operator=(const EmptyStackException &rhs) _NOEXCEPT {
+                _msg = rhs._msg;
+                return *this;
+            }
+            virtual const char* what() const _NOEXCEPT
+            {
+                return _msg.c_str();
+            }
+        private:
+            std::string _msg;
     };
 
     /** Constructor (C strings).
