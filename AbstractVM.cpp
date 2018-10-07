@@ -63,7 +63,7 @@ void AbstractVM::div() {
 
 void AbstractVM::mod() {
 	if (_buff[0]->toString() == "0") {
-		throw Exception::DivisionByZeroException("Division by zero");
+		throw Exception::DivisionByZeroException("Modulo by zero");
 	}
 
 	_unstackElems();
@@ -77,7 +77,7 @@ std::string AbstractVM::checkExpression(std::string expression) {
             terminate();
         }
 		else
-			throw Exception::WrongExitException("The program doesn’t have an exit instruction");
+			throw Exception::WrongExitException("The program does not have an exit instruction");
 		return NULL;
 	}
 	expression = expression.substr(0, expression.find(";", 0));
@@ -97,14 +97,13 @@ void AbstractVM::setExpression(std::string expression) {
 	try {
 		checkExpression(expression);
 	}
-	catch (std::exception &exception) {
-		std::cout << exception.what() << std::endl;
-		if (std::strcmp(exception.what(), "Invalid termination!") == 0)
-		{
-
-		}
-		return;
-	}
+    catch (Exception::InputException &exception) {
+        std::cout << "Line " << _line << ": Input Exception "
+                  << exception.what() << "(expression: " << expression << ")" << std::endl;
+    }
+    catch (Exception::WrongExitException &exception) {
+        std::cout << "Line " << _line << ": Wrong Exit Exception: " << exception.what() << std::endl;
+    }
 	std::array<std::string, 3> result = {"", "", ""};
 
 	std::regex ws_re("\\s|\\(|\\)");
