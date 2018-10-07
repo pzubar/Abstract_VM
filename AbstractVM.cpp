@@ -41,87 +41,33 @@ void AbstractVM::add() {
 }
 
 void AbstractVM::sub() {
-	try {
-		checkStack();
-	}
-	catch (Exception::SmallStackException &exception) {
-		std::cout << "Line " << _line << ": Less that two values in stack: "
-				  << exception.what() << std::endl;
-	}
+	checkStack();
 	_unstackElems();
-	try {
-		_container.push_front(*_buff[1] - *_buff[0]);
-	}
-	catch (Exception::OverflowException &exception) {
-		std::cout << "Line " << _line << ": Overflow exception: "
-				  << exception.what() << std::endl;
-		_stackBack();
-	}
-	catch (Exception::UnderflowException &exception) {
-		std::cout << "Line " << _line << ": Underflow exception: "
-				  << exception.what() << std::endl;
-		_stackBack();
-	}
-	delete (_buff[0]);
-	delete (_buff[1]);
+	_container.push_front(*_buff[1] - *_buff[0]);
 }
 
 void AbstractVM::mul() {
-	try {
-		checkStack();
-	}
-	catch (Exception::SmallStackException &exception) {
-		std::cout << "Line " << _line << ": Less that two values in stack: "
-				  << exception.what() << std::endl;
-	}
+	checkStack();
 	_unstackElems();
-	try {
-		_container.push_front(*_buff[1] * *_buff[0]);
-	}
-	catch (Exception::OverflowException &exception) {
-		std::cout << "Line " << _line << ": Overflow exception: "
-				  << exception.what() << std::endl;
-		_stackBack();
-	}
-	catch (Exception::UnderflowException &exception) {
-		std::cout << "Line " << _line << ": Underflow exception: "
-				  << exception.what() << std::endl;
-		_stackBack();
-	}
-	delete (_buff[0]);
-	delete (_buff[1]);
+	_container.push_front(*_buff[1] * *_buff[0]);
 }
 
 void AbstractVM::div() {
 	if (_buff[0]->toString() == "0") {
 		throw Exception::DivisionByZeroException("Division by zero");
 	}
-	try {
-		checkStack();
-	}
-	catch (Exception::SmallStackException &exception) {
-		std::cout << "Line " << _line << ": Less that two values in stack: "
-				  << exception.what() << std::endl;
-	}
-
+	checkStack();
 	_unstackElems();
 	_container.push_front(*_buff[1] / *_buff[0]);
-	delete (_buff[0]);
-	delete (_buff[1]);
 }
 
 void AbstractVM::mod() {
-	if (_containerSize < 2) {
-		throw Exception::DivisionByZeroException("Unable to MOD, there are less than 2 elements in the stack!!!"); //!!
-	}
 	if (_buff[0]->toString() == "0") {
 		throw Exception::DivisionByZeroException("Division by zero");
 	}
 
 	_unstackElems();
 	_container.push_front(*_buff[1] % *_buff[0]);
-	delete (_buff[0]);
-	delete (_buff[1]);
 }
 
 std::string AbstractVM::checkExpression(std::string expression) {
