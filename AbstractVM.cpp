@@ -19,35 +19,49 @@ void AbstractVM::push(std::string const &value, eOperandType type) {
 		_containerSize++;
 	}
 	catch (Exception::OverflowException &exception) {
-		std::cout << "Line " << _line << ": Overflow exception: " << exception.what() << std::endl;
+		std::cout << "Line " << _line << ": Overflow exception: "
+			<< exception.what() << " (value: " << value << ")" << std::endl;
 	}
     catch (Exception::UnderflowException &exception) {
-        std::cout << "Line " << _line << ": Underflow exception: " << exception.what() << std::endl;
+        std::cout << "Line " << _line << ": Underflow exception: "
+        	<< exception.what() << " (value: " << value << ")" << std::endl;
     }
 };
 
 void AbstractVM::assert(std::string const &value, eOperandType type)
 {
-	if (_container.front()->toString() == value && type)
-		std::cout << "Assertation succesfull\n";
-	else
-		throw Exception("Assertation failed");
+	if (_container.front()->toString() != value && type)
+		throw Exception::AssertionException("Values are not equal");
 }
 
 void AbstractVM::add() {
-	if (_containerSize < 2) {
-		throw Exception("Unable to ADD, there are less than 2 elements in the stack!!!");
+	try {
+        checkStack();
+	}
+	catch (Exception::SmallStackException &exception) {
+        std::cout << "Line " << _line << ": Less that two values in stack: "
+                  << exception.what() << std::endl;
 	}
 	_unstackElems();
-	_container.push_front(*_buff[1] + *_buff[0]);
+	try {
+        _container.push_front(*_buff[1] + *_buff[0]);
+	}
+    catch (Exception::OverflowException &exception) {
+        std::cout << "Line " << _line << ": Overflow exception: "
+                  << exception.what() << std::endl;
+		_stackBack();
+    }
+	catch (Exception::UnderflowException &exception) {
+		std::cout << "Line " << _line << ": Underflow exception: "
+				  << exception.what() << std::endl;
+		_stackBack();
+	}
 	delete (_buff[0]);
 	delete (_buff[1]);
 }
 
 void AbstractVM::sub() {
-	if (_containerSize < 2) {
-		throw Exception("Unable to SUB, there are less than 2 elements in the stack!!!");
-	}
+
 	_unstackElems();
 	_container.push_front(*_buff[1] - *_buff[0]);
 	delete (_buff[0]);
@@ -55,15 +69,38 @@ void AbstractVM::sub() {
 }
 
 void AbstractVM::mul() {
-	if (_containerSize < 2) {
-		throw Exception("Unable to MUL, there are less than 2 elements in the stack!!!");
-	}
+
 	_unstackElems();
 	_container.push_front(*_buff[1] * *_buff[0]);
 	delete (_buff[0]);
 	delete (_buff[1]);
 }
 
+void AbstractVM::div() {
+
+	if (_buff[0]->toString() == "0") {
+		throw Exception::DivisionByZeroException("Division by zero");
+	}
+
+	_unstackElems();
+	_container.push_front(*_buff[1] / *_buff[0]);
+	delete (_buff[0]);
+	delete (_buff[1]);
+}
+
+void AbstractVM::mod() {
+	if (_containerSize < 2) {
+		throw Exception::DivisionByZeroException("Unable to MOD, there are less than 2 elements in the stack!!!"); //!!
+	}
+	if (_buff[0]->toString() == "0") {
+		throw Exception::DivisionByZeroException("Division by zero");
+	}
+
+	_unstackElems();
+	_container.push_front(*_buff[1] % *_buff[0]);
+	delete (_buff[0]);
+	delete (_buff[1]);
+}
 
 std::string AbstractVM::checkExpression(std::string expression) {
 	if (expression == ";;")
@@ -72,7 +109,7 @@ std::string AbstractVM::checkExpression(std::string expression) {
             terminate();
         }
 		else
-			throw Exception("Invalid termination!");
+			throw Exception::InputException("Invalid termination!"); //!
 		return NULL;
 	}
 	expression = expression.substr(0, expression.find(";", 0));
@@ -121,14 +158,7 @@ void AbstractVM::setExpression(std::string expression) {
 		}
 	}
 	else
-	{
-		try {
-			AbstractVM::execute(result[0]);
-		}
-		catch (std::exception &exception) {
-			std::cout << exception.what() << std::endl;
-		}
-	}
+		AbstractVM::execute(result[0]);
 }
 
 void AbstractVM::dump() {
@@ -139,7 +169,7 @@ void AbstractVM::dump() {
 
 void AbstractVM::pop() {
 	if (_containerSize < 1) {
-		throw Exception("Error : Pop on empty stack");
+		throw Exception::EmptyStackException("Instruction pop on an empty stack");
 	}
 	_container.pop_front();
 }
@@ -147,8 +177,8 @@ void AbstractVM::pop() {
 void AbstractVM::print() {
 	if (_containerSize && _container.front()->getType() == Int8)
 		std::cout << "PRINTING: " << static_cast<char>(std::stoi(_container.front()->toString())) << std::endl;
-	else
-		throw Exception("Printing failed");
+	else {}
+//		throw ExceptionException("Printing failed");
 }
 
 void AbstractVM::exit() {
@@ -177,6 +207,8 @@ void AbstractVM::execute(std::string operation) {
 		{"pop", &AbstractVM::pop},
 		{"sub", &AbstractVM::sub},
 		{"mul", &AbstractVM::mul},
+		{"div", &AbstractVM::div},
+		{"mod", &AbstractVM::mod},
 		{"exit", &AbstractVM::exit},
 	};
 	(this->*operations[operation])();
@@ -193,6 +225,26 @@ void AbstractVM::execute(std::string command, std::string type, std::string num)
 		{"double", Double}
 	};
 
+	try {
+		(this->*_commands[command])(num, types[type]);
+	}
+	catch (Exception::EmptyStackException &exception) {
+		std::cout << "Line " << _line << ": Empty stack exception: "
+				  << exception.what() << std::endl;
+	}
+	catch (Exception::DivisionByZeroException &exception) {
+		std::cout << "Line " << _line << ": Exception: "
+				  << exception.what() << std::endl;
+	}
+	catch (Exception::AssertionException &exception) {
+		std::cout << "Line " << _line << ": Assertion Exception: "
+				  << exception.what() << std::endl;
+	}
+}
 
-	(this->*_commands[command])(num, types[type]);
+void AbstractVM::checkStack()
+{
+	if (_containerSize < 2) {
+		throw Exception::SmallStackException("Arithmetic instruction cannot be executed");
+	}
 }

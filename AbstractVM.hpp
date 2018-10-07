@@ -6,15 +6,14 @@
 #define AVM_ABSTRACTVM_HPP
 
 #include <iostream>
-#include <vector>
 #include <forward_list>
-#include "Factory.hpp"
-#include "Operand.hpp"
 #include <map>
 #include <exception>
 #include <regex>
 #include <array>
 #include <sstream>
+#include "Factory.hpp"
+#include "Operand.hpp"
 
 //TODO - add exceptions
 #include "Exception.hpp"
@@ -40,33 +39,31 @@ private:
 		_buff[1] = _container.front();
 		_container.pop_front();
 	};
+    void _stackBack() {
+        _container.push_front(_buff[1]);
+        _container.push_front(_buff[0]);
+    };
 
 public:
 	AbstractVM();
 	~AbstractVM() {};
-
-
 	void push(std::string const &value, eOperandType type);
-
 	void pop();
-
 	void dump();
-
 	void assert(std::string const &value, eOperandType type);
-
 	void add();
 	void sub();
 	void mul();
+	void div();
+	void mod();
 	void print();
     void exit();
     void terminate();
-
 	void execute(std::string operation);
-
 	void execute(std::string command, std::string type, std::string num);
-
 	void setExpression(std::string expression);
 	std::string checkExpression(std::string expression);
+    void checkStack();
 };
 
 

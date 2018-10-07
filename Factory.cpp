@@ -29,9 +29,9 @@ IOperand const * Factory::createFloat( std::string const & value ) const {
     return new Operand<float>(std::stod(value), Float);
 };
 IOperand const * Factory::createDouble( std::string const & value ) const {
-    if (stod(value) > DBL_MAX)
+    if (stold(value) > DBL_MAX)
         throw Exception::OverflowException("Float overflow, element won't be added to stack");
-    if (stod(value) < DBL_MIN)
+    if (stold(value) < DBL_MIN)
         throw Exception::UnderflowException("Float underflow, element won't be added to stack");
     return new Operand<double>(std::stod(value), Double);
 };
