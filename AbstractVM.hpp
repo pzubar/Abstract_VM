@@ -30,7 +30,7 @@ private:
     bool _isExit = false;
     bool _fromFile = false;
 
-    std::string _result;
+    std::ostringstream _result;
 	const IOperand * _buff[2];
 
 	void _unstackElems() {
@@ -46,7 +46,7 @@ private:
 
 public:
 	AbstractVM();
-	~AbstractVM() {};
+	~AbstractVM() = default;
 	void push(std::string const &value, eOperandType type);
 	void pop();
 	void dump();

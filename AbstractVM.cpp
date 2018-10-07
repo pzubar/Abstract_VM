@@ -169,22 +169,24 @@ void AbstractVM::dump() {
 
 void AbstractVM::pop() {
 	if (_containerSize < 1) {
-		throw Exception::EmptyStackException("Instruction pop on an empty stack");
+		throw Exception::EmptyStackException("Instruction \"pop\" on an empty stack");
 	}
 	_container.pop_front();
 }
 
 void AbstractVM::print() {
-	if (_containerSize && _container.front()->getType() == Int8)
-		std::cout << "PRINTING: " << static_cast<char>(std::stoi(_container.front()->toString())) << std::endl;
-	else {}
-//		throw ExceptionException("Printing failed");
+    if (_containerSize)
+        throw Exception::EmptyStackException("Instruction \"print\" on an empty stack");
+    else if (_container.front()->getType() == Int8)
+		std::cout << static_cast<char>(std::stoi(_container.front()->toString())) << std::endl;
+	else
+        throw Exception::AssertionException("Printing failed, the first operand in stack is not Int8");
 }
 
 void AbstractVM::exit() {
 	if (_fromFile)
 	{
-		std::cout << "!!!Exiting requested\n";
+		terminate();
 	}
 	else
 	{
@@ -193,12 +195,16 @@ void AbstractVM::exit() {
 }
 
 void AbstractVM::terminate() {
-	std::cout << _result;
+	if (!_isExit)
+		throw (Exception::WrongExitException("The program does not have an exit instruction"));
+	std::cout << _result.str();
     system("leaks avm");
 	exit();
 }
 
 void AbstractVM::execute(std::string operation) {
+	if (_isExit)
+		throw (Exception::WrongExitException("The program does not have an exit instruction"));
 	std::map<std::string, void (AbstractVM::*)(void)> operations =
 	{
 		{"add", &AbstractVM::add},

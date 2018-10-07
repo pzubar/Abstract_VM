@@ -28,7 +28,7 @@ class Exception
                 {
                     *this = rhs;
                 }
-                virtual ~InputException() = default;
+                ~InputException() override = default;
                 InputException &operator=(const InputException &rhs) _NOEXCEPT {
                     _msg = rhs._msg;
                     return *this;
@@ -159,75 +159,41 @@ class Exception
             {
                 _msg = message;
             }
-            explicit SmallStackException(const std::string& message) : std::runtime_error(message)
-            {
-                _msg = message;
-            }
             SmallStackException(const SmallStackException &rhs) : std::runtime_error(rhs)
             {
                 *this = rhs;
             }
-            ~SmallStackException() = default;
+            ~SmallStackException() override = default;
             SmallStackException &operator=(const SmallStackException &rhs) _NOEXCEPT {
                 _msg = rhs._msg;
                 return *this;
             }
-            virtual const char* what() const _NOEXCEPT
+            const char* what() const noexcept override
             {
                 return _msg.c_str();
             }
         private:
             std::string _msg;
     };
-//    /** Constructor (C strings).
-//     *  @param message C-style string error message.
-//     *                 The string contents are copied upon construction.
-//     *                 Hence, responsibility for deleting the char* lies
-//     *                 with the caller.
-//     */
-//    explicit Exception(const char* message):
-//            msg_(message)
-//    {
-//    }
-//
-//    /** Constructor (C++ STL strings).
-//     *  @param message The error message.
-//     */
-//    explicit Exception(const std::string& message):
-//            msg_(message)
-//    {}
-//
-//    /** Destructor.
-//     * Virtual to allow for subclassing.
-//     */
-//    virtual ~Exception() _NOEXCEPT{}
-//
-//    /** Returns a pointer to the (constant) error description.
-//     *  @return A pointer to a const char*. The underlying memory
-//     *          is in posession of the Exception object. Callers must
-//     *          not attempt to free the memory.
-//     */
-//    virtual const char* what() const _NOEXCEPT {
-//        return msg_.c_str();
-//    }
-
-//protected:
-//    /** Error message.
-//     */
-//    std::string msg_;
 
     class AssertionException : public std::exception {
         std::runtime_error _error;
     public:
-        AssertionException(const char *msg) : _error(msg) {}
-
+        explicit AssertionException(const char *msg) : _error(msg) {}
         const char *what() const noexcept override {
             return _error.what();
         }
     };
 
-private:
-    std::runtime_error rte;
+    class WrongExitException : public std::exception {
+        std::logic_error _error;
+    public:
+        explicit NoExitException(const char *msg) : _error(msg) {}
+        const char *what() const noexcept override {
+            return _error.what();
+        }
+    };
+
 };
 
 
