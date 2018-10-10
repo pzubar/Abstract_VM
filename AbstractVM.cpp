@@ -64,6 +64,7 @@ void AbstractVM::setExpression(std::string expression)
 		if (strcmp(exception.what(), "The program does not have an exit instruction") == 0)
 		{
 			_isExit = true;
+            _output += out.str();
 			terminate();
 		}
 	}

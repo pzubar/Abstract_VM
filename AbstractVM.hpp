@@ -18,7 +18,7 @@
 #include "Exception.hpp"
 
 // TODO: refacror exception logic
-// TODO: fix absent "exit" option bug
+// TODO: test absent "exit" option bug
 
 class AbstractVM {
 private:
