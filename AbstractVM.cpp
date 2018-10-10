@@ -68,46 +68,32 @@ void AbstractVM::setExpression(std::string expression)
 		}
 	}
 	catch (Exception::SmallStackException &exception) {
-		out << "Line " << _line << ": Less that two values in stack: "
-			<< exception.what() << std::endl;
-	}
-	catch (Exception::EmptyStackException &exception) {
-		out << "Line " << _line << ": Empty Stack exception: "
-			<< exception.what() << std::endl;
+		out << "Line " << _line << ": Less that two values in stack: " << exception.what() << std::endl;
 	}
 	catch (Exception::OverflowException &exception) {
-		out << "Line " << _line << ": Overflow exception: "
-			<< exception.what() << std::endl;
+		out << "Line " << _line << ": Overflow exception: "	<< exception.what() << std::endl;
 	}
 	catch (Exception::UnderflowException &exception) {
-		out << "Line " << _line << ": Underflow exception: "
-			<< exception.what() << std::endl;
+		out << "Line " << _line << ": Underflow exception: " << exception.what() << std::endl;
+	}
+	catch (Exception::EmptyStackException &exception) {
+		out << "Line " << _line << ": Empty stack exception: " << exception.what() << std::endl;
+	}
+	catch (Exception::DivisionByZeroException &exception) {
+		out << "Line " << _line << ": Exception: " << exception.what() << std::endl;
+	}
+	catch (Exception::AssertionException &exception) {
+		out << "Line " << _line << ": Assertion Exception: " << exception.what() << std::endl;
 	}
 	_output += out.str();
 }
 
 void AbstractVM::push(std::string const &value, eOperandType type)
 {
-	std::ostringstream out;
 	Factory factory = Factory();
-
-	try
-	{
-		const IOperand *operand = factory.createOperand(type, value);
-		_container.push_front(operand);
-		_containerSize++;
-	}
-	catch (Exception::OverflowException &exception)
-	{
-		out << "Line " << _line << ": Overflow exception: "
-			<< exception.what() << " (value: " << value << ")" << std::endl;
-		_output += out.str();
-	}
-    catch (Exception::UnderflowException &exception) {
-		out << "Line " << _line << ": Overflow exception: "
-			<< exception.what() << " (value: " << value << ")" << std::endl;
-		_output += out.str();
-    }
+	const IOperand *operand = factory.createOperand(type, value);
+	_container.push_front(operand);
+	_containerSize++;
 };
 
 void AbstractVM::pop() {
@@ -163,7 +149,6 @@ std::string AbstractVM::checkExpression(std::string expression) {
 			throw Exception::WrongExitException("The program does not have an exit instruction");
 	}
 	expression = expression.substr(0, expression.find(";", 0));
-	std::cout << "expression: " << expression << std::endl;
 	std::regex reg(	"(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
 					   "((float|double)(\\([-]?\\d*[,]*?\\d+\\)))))|"
 					   "(pop|dump|add|sub|mul|div|mod|print|exit))(\\s*)?$");
@@ -237,14 +222,11 @@ void AbstractVM::execute(std::string operation) {
 
 void AbstractVM::execute(std::string command, std::string type, std::string num)
 {
-	std::ostringstream out;
-
 	std::map<std::string, void (AbstractVM::*)(std::string const &, eOperandType type)> commands =
 	{
 		{"push", &AbstractVM::push},
 		{"assert", &AbstractVM::assert}
 	};
-
 	std::map<std::string, eOperandType> types =
 	{
 		{"int8", Int8},
@@ -253,20 +235,7 @@ void AbstractVM::execute(std::string command, std::string type, std::string num)
 		{"float", Float},
 		{"double", Double}
 	};
-
-	try {
-		(this->*commands[command])(num, types[type]);
-	}
-	catch (Exception::EmptyStackException &exception) {
-		out << "Line " << _line << ": Empty stack exception: " << exception.what() << std::endl;
-	}
-	catch (Exception::DivisionByZeroException &exception) {
-		out << "Line " << _line << ": Exception: " << exception.what() << std::endl;
-	}
-	catch (Exception::AssertionException &exception) {
-		out << "Line " << _line << ": Assertion Exception: " << exception.what() << std::endl;
-	}
-	_output += out.str();
+	(this->*commands[command])(num, types[type]);
 }
 
 void AbstractVM::_unstackElements()
