@@ -166,7 +166,7 @@ void AbstractVM::dump() {
 
 void AbstractVM::print() {
 
-	if (_containerSize)
+	if (!_containerSize)
 		throw Exception::EmptyStackException("Instruction \"print\" on an empty stack");
 	else if (_container.front()->getType() == Int8)
 	{
@@ -223,6 +223,10 @@ void AbstractVM::execute(std::string operation) {
 	catch (Exception::SmallStackException &exception) {
 		out << "Line " << _line << ": Less that two values in stack: "
 				  << exception.what() << std::endl;
+	}
+	catch (Exception::EmptyStackException &exception) {
+		out << "Line " << _line << ": Empty Stack exception: "
+			<< exception.what() << std::endl;
 	}
 	catch (Exception::OverflowException &exception) {
 		out << "Line " << _line << ": Overflow exception: "
