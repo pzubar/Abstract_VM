@@ -231,12 +231,10 @@ void AbstractVM::execute(std::string operation) {
 	catch (Exception::OverflowException &exception) {
 		out << "Line " << _line << ": Overflow exception: "
 				  << exception.what() << std::endl;
-		_stackBack();
 	}
 	catch (Exception::UnderflowException &exception) {
 		out << "Line " << _line << ": Underflow exception: "
 				  << exception.what() << std::endl;
-		_stackBack();
 	}
 	_output += out.str();
 }

@@ -28,10 +28,6 @@ private:
 	const IOperand * _buff[2];
 
 	void _unstackElements();
-    void _stackBack() {
-        _container.push_front(_buff[1]);
-        _container.push_front(_buff[0]);
-    };
     AbstractVM();
 
 public:
