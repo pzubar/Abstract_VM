@@ -19,12 +19,8 @@
 
 class AbstractVM {
 private:
-
-	std::map<std::string, void (AbstractVM::*)(std::string const &, eOperandType type)> _commands;
-
 	std::forward_list<const IOperand *>	_container;
 	size_t		_containerSize = 0;
-	Factory		_factory;
 	int			_line = 0;
     bool		_isExit = false;
     bool		_fromFile = false;
@@ -36,11 +32,11 @@ private:
         _container.push_front(_buff[1]);
         _container.push_front(_buff[0]);
     };
-    void _checkStack();
+    AbstractVM();
 
 public:
-	AbstractVM();
-    AbstractVM(char *filename);
+
+    AbstractVM(const char *filename);
 	~AbstractVM(){};
 	void push(std::string const &value, eOperandType type);
 	void pop();
@@ -52,13 +48,12 @@ public:
 	void div();
 	void mod();
 	void print();
-    void exit();
+    void quit();
     void terminate();
 	void execute(std::string operation);
 	void execute(std::string command, std::string type, std::string num);
 	void setExpression(std::string expression);
 	std::string checkExpression(std::string expression);
-
 };
 
 
