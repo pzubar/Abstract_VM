@@ -37,6 +37,55 @@ AbstractVM::AbstractVM(const char * filename)
 	else std::cout << "Unable to open file";
 }
 
+void AbstractVM::setExpression(std::string expression)
+{
+	std::ostringstream out;
+
+	_line++;
+	try {
+		checkExpression(expression);
+		std::array<std::string, 3> result = {"", "", ""};
+
+		std::regex splitBy("\\s|\\(|\\)");
+		std::copy(std::sregex_token_iterator(expression.begin(), expression.end(), splitBy, -1),
+				  std::sregex_token_iterator(),
+				  result.begin());
+		if (!result[2].empty())
+			AbstractVM::execute(result[0], result[1], result[2]);
+		else
+			AbstractVM::execute(result[0]);
+	}
+	catch (Exception::InputException &exception) {
+		out << "Line " << _line << ": Input Exception "
+			<< exception.what() << "(expression: " << expression << ")" << std::endl;
+	}
+	catch (Exception::WrongExitException &exception) {
+		out << "Line " << _line << ": Wrong Exit Exception: " << exception.what() << std::endl;
+		if (strcmp(exception.what(), "The program does not have an exit instruction") == 0)
+		{
+			_isExit = true;
+			terminate();
+		}
+	}
+	catch (Exception::SmallStackException &exception) {
+		out << "Line " << _line << ": Less that two values in stack: "
+			<< exception.what() << std::endl;
+	}
+	catch (Exception::EmptyStackException &exception) {
+		out << "Line " << _line << ": Empty Stack exception: "
+			<< exception.what() << std::endl;
+	}
+	catch (Exception::OverflowException &exception) {
+		out << "Line " << _line << ": Overflow exception: "
+			<< exception.what() << std::endl;
+	}
+	catch (Exception::UnderflowException &exception) {
+		out << "Line " << _line << ": Underflow exception: "
+			<< exception.what() << std::endl;
+	}
+	_output += out.str();
+}
+
 void AbstractVM::push(std::string const &value, eOperandType type)
 {
 	std::ostringstream out;
@@ -108,51 +157,19 @@ void AbstractVM::mod() {
 std::string AbstractVM::checkExpression(std::string expression) {
 	if (expression == ";;")
 	{
-		if (_isExit)
+		if (_isExit && !_fromFile)
             terminate();
-		else
+		else if (!_isExit && !_fromFile)
 			throw Exception::WrongExitException("The program does not have an exit instruction");
-		return NULL;
 	}
 	expression = expression.substr(0, expression.find(";", 0));
 	std::cout << "expression: " << expression << std::endl;
 	std::regex reg(	"(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
 					   "((float|double)(\\([-]?\\d*[,]*?\\d+\\)))))|"
-					   "(pop|dump|add|sub|mul|div|mod|print|exit|;;))(\\s*)?$");
+					   "(pop|dump|add|sub|mul|div|mod|print|exit))(\\s*)?$");
 	if (!std::regex_match(expression.begin(), expression.end(), reg))
 		throw Exception::InputException("Unknown instruction or invalid input");
 	return expression;
-}
-
-void AbstractVM::setExpression(std::string expression)
-{
-	std::ostringstream out;
-
-	_line++;
-	try {
-		checkExpression(expression);
-		std::array<std::string, 3> result = {"", "", ""};
-
-		std::regex splitBy("\\s|\\(|\\)");
-		std::copy(std::sregex_token_iterator(expression.begin(), expression.end(), splitBy, -1),
-				  std::sregex_token_iterator(),
-				  result.begin());
-		if (!result[2].empty())
-			AbstractVM::execute(result[0], result[1], result[2]);
-		else
-			AbstractVM::execute(result[0]);
-	}
-	catch (Exception::InputException &exception) {
-		out << "Line " << _line << ": Input Exception "
-				  << exception.what() << "(expression: " << expression << ")" << std::endl;
-		_output += out.str();
-		return;
-	}
-	catch (Exception::WrongExitException &exception) {
-		out << "Line " << _line << ": Wrong Exit Exception: " << exception.what() << std::endl;
-		_output += out.str();
-		return;
-	}
 }
 
 void AbstractVM::dump() {
@@ -165,12 +182,12 @@ void AbstractVM::dump() {
 };
 
 void AbstractVM::print() {
+	std::ostringstream out;
 
 	if (!_containerSize)
 		throw Exception::EmptyStackException("Instruction \"print\" on an empty stack");
 	else if (_container.front()->getType() == Int8)
 	{
-		std::ostringstream out;
 		out << static_cast<char>(std::stoi(_container.front()->toString())) << std::endl;
 		_output += out.str();
 	}
@@ -194,8 +211,6 @@ void AbstractVM::terminate() {
 }
 
 void AbstractVM::execute(std::string operation) {
-	std::ostringstream out;
-
 	if (_isExit)
 		throw (Exception::WrongExitException("The program has an exit instruction"));
 	std::map<std::string, void (AbstractVM::*)(void)> operations =
@@ -210,33 +225,14 @@ void AbstractVM::execute(std::string operation) {
 		{"mod", &AbstractVM::mod},
 		{"exit", &AbstractVM::quit},
 	};
-	try {
-		(this->*operations[operation])();
-		if (_buff[0])
-		{
-			delete (_buff[0]);
-			_buff[0] = NULL;
-			delete (_buff[1]);
-			_buff[1] = NULL;
-		}
+	(this->*operations[operation])();
+	if (_buff[0])
+	{
+		delete (_buff[0]);
+		_buff[0] = NULL;
+		delete (_buff[1]);
+		_buff[1] = NULL;
 	}
-	catch (Exception::SmallStackException &exception) {
-		out << "Line " << _line << ": Less that two values in stack: "
-				  << exception.what() << std::endl;
-	}
-	catch (Exception::EmptyStackException &exception) {
-		out << "Line " << _line << ": Empty Stack exception: "
-			<< exception.what() << std::endl;
-	}
-	catch (Exception::OverflowException &exception) {
-		out << "Line " << _line << ": Overflow exception: "
-				  << exception.what() << std::endl;
-	}
-	catch (Exception::UnderflowException &exception) {
-		out << "Line " << _line << ": Underflow exception: "
-				  << exception.what() << std::endl;
-	}
-	_output += out.str();
 }
 
 void AbstractVM::execute(std::string command, std::string type, std::string num)
