@@ -12,6 +12,21 @@ AbstractVM::AbstractVM()
 	_commands["assert"] = &AbstractVM::assert;
 };
 
+AbstractVM::AbstractVM(char *filename) {
+	std::string line;
+	std::ifstream myfile (filename);
+	if (myfile.is_open())
+	{
+		while ( getline (myfile,line) )
+		{
+			std::cout << line << '\n';
+		}
+		myfile.close();
+	}
+
+	else std::cout << "Unable to open file";
+}
+
 void AbstractVM::push(std::string const &value, eOperandType type) {
 	try {
 		const IOperand *operand = _factory.createOperand(type, value);
@@ -28,6 +43,13 @@ void AbstractVM::push(std::string const &value, eOperandType type) {
     }
 };
 
+void AbstractVM::pop() {
+    if (_containerSize < 1) {
+        throw Exception::EmptyStackException("Instruction \"pop\" on an empty stack");
+    }
+    _container.pop_front();
+}
+
 void AbstractVM::assert(std::string const &value, eOperandType type)
 {
 	if (_container.front()->toString() != value && type)
@@ -35,20 +57,17 @@ void AbstractVM::assert(std::string const &value, eOperandType type)
 }
 
 void AbstractVM::add() {
-	checkStack();
-	_unstackElems();
+    _unstackElements();
 	_container.push_front(*_buff[1] + *_buff[0]);
 }
 
 void AbstractVM::sub() {
-	checkStack();
-	_unstackElems();
+    _unstackElements();
 	_container.push_front(*_buff[1] - *_buff[0]);
 }
 
 void AbstractVM::mul() {
-	checkStack();
-	_unstackElems();
+    _unstackElements();
 	_container.push_front(*_buff[1] * *_buff[0]);
 }
 
@@ -56,8 +75,7 @@ void AbstractVM::div() {
 	if (_buff[0]->toString() == "0") {
 		throw Exception::DivisionByZeroException("Division by zero");
 	}
-	checkStack();
-	_unstackElems();
+    _unstackElements();
 	_container.push_front(*_buff[1] / *_buff[0]);
 }
 
@@ -65,8 +83,7 @@ void AbstractVM::mod() {
 	if (_buff[0]->toString() == "0") {
 		throw Exception::DivisionByZeroException("Modulo by zero");
 	}
-
-	_unstackElems();
+    _unstackElements();
 	_container.push_front(*_buff[1] % *_buff[0]);
 }
 
@@ -100,26 +117,20 @@ void AbstractVM::setExpression(std::string expression) {
     catch (Exception::InputException &exception) {
         std::cout << "Line " << _line << ": Input Exception "
                   << exception.what() << "(expression: " << expression << ")" << std::endl;
+        return;
     }
     catch (Exception::WrongExitException &exception) {
         std::cout << "Line " << _line << ": Wrong Exit Exception: " << exception.what() << std::endl;
+        return;
     }
 	std::array<std::string, 3> result = {"", "", ""};
 
-	std::regex ws_re("\\s|\\(|\\)");
-	std::copy( std::sregex_token_iterator(expression.begin(), expression.end(), ws_re, -1),
+	std::regex splitBy("\\s|\\(|\\)");
+	std::copy( std::sregex_token_iterator(expression.begin(), expression.end(), splitBy, -1),
 			   std::sregex_token_iterator(),
 			   result.begin());
 	if (!result[2].empty())
-	{
-		try {
-			AbstractVM::execute(result[0], result[1], result[2]);
-		}
-		catch (std::exception &exception)
-		{
-			std::cout << "catch it!" << exception.what() << std::endl;
-		}
-	}
+	    AbstractVM::execute(result[0], result[1], result[2]);
 	else
 		AbstractVM::execute(result[0]);
 }
@@ -129,13 +140,6 @@ void AbstractVM::dump() {
 		std::cout << stod(iterator->toString()) << std::endl;
 	}
 };
-
-void AbstractVM::pop() {
-	if (_containerSize < 1) {
-		throw Exception::EmptyStackException("Instruction \"pop\" on an empty stack");
-	}
-	_container.pop_front();
-}
 
 void AbstractVM::print() {
     if (_containerSize)
@@ -234,9 +238,18 @@ void AbstractVM::execute(std::string command, std::string type, std::string num)
 	}
 }
 
-void AbstractVM::checkStack()
+void AbstractVM::_checkStack()
 {
 	if (_containerSize < 2) {
 		throw Exception::SmallStackException("Arithmetic instruction cannot be executed");
 	}
 }
+
+void AbstractVM::_unstackElements()
+{
+    _checkStack();
+    _buff[0] = _container.front();
+    _container.pop_front();
+    _buff[1] = _container.front();
+    _container.pop_front();
+};

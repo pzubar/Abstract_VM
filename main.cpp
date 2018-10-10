@@ -1,15 +1,18 @@
 #include "AbstractVM.hpp"
 
 
-int main(void)
+int main(int argc, char **argv)
 {
 	AbstractVM abstractVM = AbstractVM();
 	std::string str;
 
-
-	while (getline(std::cin, str)) {
-		abstractVM.setExpression(str);
-	}
+    if (argc == 2)
+    {
+        AbstractVM abstractVMF = AbstractVM(argv[1]);
+    } else
+        while (getline(std::cin, str)) {
+            abstractVM.setExpression(str);
+        }
 
 
 

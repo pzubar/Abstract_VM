@@ -12,6 +12,7 @@
 #include <regex>
 #include <array>
 #include <sstream>
+#include <fstream>
 #include "Factory.hpp"
 #include "Operand.hpp"
 #include "Exception.hpp"
@@ -30,19 +31,16 @@ private:
     std::string	_output;
 	const IOperand * _buff[2];
 
-	void _unstackElems() {
-		_buff[0] = _container.front();
-		_container.pop_front();
-		_buff[1] = _container.front();
-		_container.pop_front();
-	};
+	void _unstackElements();
     void _stackBack() {
         _container.push_front(_buff[1]);
         _container.push_front(_buff[0]);
     };
+    void _checkStack();
 
 public:
 	AbstractVM();
+    AbstractVM(char *filename);
 	~AbstractVM(){};
 	void push(std::string const &value, eOperandType type);
 	void pop();
@@ -60,7 +58,7 @@ public:
 	void execute(std::string command, std::string type, std::string num);
 	void setExpression(std::string expression);
 	std::string checkExpression(std::string expression);
-    void checkStack();
+
 };
 
 
