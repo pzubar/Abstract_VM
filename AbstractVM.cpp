@@ -4,35 +4,23 @@
 
 #include "AbstractVM.hpp"
 
-AbstractVM::AbstractVM()
-{
-	//	if (std::cin.bad()) {
-	//		// IO error
-	//		std::cout << "A";
-	//	} else if (!std::cin.eof()) {
-	//		std::cout << "B";
-	//		// format error (not possible with getline but possible with operator>>)
-	//	} else {
-	//		std::cout << "C";
-	//		// format error (not possible with getline but possible with operator>>)
-	//		// or end of file (can't make the difference)
-	//	}
-};
+AbstractVM::AbstractVM() = default;
 
 AbstractVM::AbstractVM(const char * filename)
 {
 	std::string str;
-	std::ifstream myfile(filename);
+	std::ifstream file(filename);
 
 	if (!filename)
 		while (getline(std::cin, str))
 			setExpression(str);
-	else if (myfile.is_open())
+	else if (file.is_open())
 	{
 		_fromFile = true;
-		while ( getline (myfile,str) )
+		while ( getline (file,str) )
 			setExpression(str);
-		myfile.close();
+		//TODO check if exit was OK
+		file.close();
 	}
 	else std::cout << "Unable to open file";
 }
@@ -44,7 +32,7 @@ void AbstractVM::setExpression(std::string expression)
 	_line++;
 	try {
 		checkExpression(expression);
-        for(int i=0; !isalpha(expression[i]); i++)
+        for (size_t i = 0; !isalpha(expression[i]); i++)
 			expression.erase(i--, 1);
         std::array<std::string, 3> result = {"", "", ""};
 
@@ -151,7 +139,7 @@ std::string AbstractVM::checkExpression(std::string expression) {
 		else if (!_isExit && !_fromFile)
 			throw Exception::WrongExitException("The program does not have an exit instruction");
 	}
-	expression = expression.substr(0, expression.find(";", 0));
+	expression = expression.substr(0, expression.find(';', 0));
 	std::regex reg(	"(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
 					   "((float|double)(\\([-]?\\d*[,]*?\\d+\\)))))|"
 					   "(pop|dump|add|sub|mul|div|mod|print|exit))(\\s*)?$");
@@ -217,9 +205,9 @@ void AbstractVM::execute(std::string operation) {
 	if (_buff[0])
 	{
 		delete (_buff[0]);
-		_buff[0] = NULL;
+		_buff[0] = nullptr;
 		delete (_buff[1]);
-		_buff[1] = NULL;
+		_buff[1] = nullptr;
 	}
 }
 
