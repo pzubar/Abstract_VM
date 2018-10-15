@@ -44,9 +44,16 @@ void AbstractVM::setExpression(std::string expression)
 	_line++;
 	try {
 		checkExpression(expression);
-		std::array<std::string, 3> result = {"", "", ""};
+        for(int i=0; i< expression.length(); i++)
+        {
+            if (expression[i] == ' ' || expression[i] == '\t')
+                expression.erase(i--, 1);
+            if (isalpha(expression[i]))
+                break;
+        }
+        std::array<std::string, 3> result = {"", "", ""};
 
-		std::regex splitBy("\\s|\\(|\\)");
+		std::regex splitBy("\\s+|\\(|\\)");
 		std::copy(std::sregex_token_iterator(expression.begin(), expression.end(), splitBy, -1),
 				  std::sregex_token_iterator(),
 				  result.begin());
