@@ -29,11 +29,11 @@ class Exception
                     *this = rhs;
                 }
                 virtual ~InputException()= default;
-                InputException &operator=(const InputException &rhs) _NOEXCEPT {
+                InputException &operator=(const InputException &rhs) noexcept {
                     _msg = rhs._msg;
                     return *this;
                 }
-                virtual const char* what() const _NOEXCEPT
+                virtual const char* what() const noexcept
                 {
                     return _msg.c_str();
                 }
@@ -56,12 +56,12 @@ class Exception
                 {
                     *this = rhs;
                 }
-                virtual ~OverflowException() _NOEXCEPT {};
-                OverflowException &operator=(const OverflowException &rhs) _NOEXCEPT {
+                virtual ~OverflowException() noexcept {};
+                OverflowException &operator=(const OverflowException &rhs) noexcept {
                     _msg = rhs._msg;
                     return *this;
                 }
-                virtual const char* what() const _NOEXCEPT
+                virtual const char* what() const noexcept
                 {
                     return _msg.c_str();
                 }
@@ -83,12 +83,12 @@ class Exception
             {
                 *this = rhs;
             }
-            virtual ~UnderflowException() _NOEXCEPT {};
-            UnderflowException &operator=(const UnderflowException &rhs) _NOEXCEPT {
+            virtual ~UnderflowException() noexcept {};
+            UnderflowException &operator=(const UnderflowException &rhs) noexcept {
                 _msg = rhs._msg;
                 return *this;
             }
-            virtual const char* what() const _NOEXCEPT
+            virtual const char* what() const noexcept
             {
                 return  _msg.c_str();
             }
@@ -111,12 +111,12 @@ class Exception
             {
                 *this = rhs;
             }
-            virtual ~EmptyStackException() _NOEXCEPT {};
-            EmptyStackException &operator=(const EmptyStackException &rhs) _NOEXCEPT {
+            virtual ~EmptyStackException() noexcept {};
+            EmptyStackException &operator=(const EmptyStackException &rhs) noexcept {
                 _msg = rhs._msg;
                 return *this;
             }
-            virtual const char* what() const _NOEXCEPT
+            virtual const char* what() const noexcept
             {
                 return _msg.c_str();
             }
@@ -140,7 +140,7 @@ class Exception
                 *this = rhs;
             }
             ~DivisionByZeroException() noexcept override = default;
-            DivisionByZeroException &operator=(const DivisionByZeroException &rhs) _NOEXCEPT {
+            DivisionByZeroException &operator=(const DivisionByZeroException &rhs) noexcept {
                 _msg = rhs._msg;
                 return *this;
             }
@@ -164,7 +164,7 @@ class Exception
                 *this = rhs;
             }
             ~SmallStackException() override = default;
-            SmallStackException &operator=(const SmallStackException &rhs) _NOEXCEPT {
+            SmallStackException &operator=(const SmallStackException &rhs) noexcept {
                 _msg = rhs._msg;
                 return *this;
             }
