@@ -44,13 +44,8 @@ void AbstractVM::setExpression(std::string expression)
 	_line++;
 	try {
 		checkExpression(expression);
-        for(int i=0; i< expression.length(); i++)
-        {
-            if (expression[i] == ' ' || expression[i] == '\t')
-                expression.erase(i--, 1);
-            if (isalpha(expression[i]))
-                break;
-        }
+        for(int i=0; !isalpha(expression[i]); i++)
+			expression.erase(i--, 1);
         std::array<std::string, 3> result = {"", "", ""};
 
 		std::regex splitBy("\\s+|\\(|\\)");
