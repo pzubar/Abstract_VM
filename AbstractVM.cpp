@@ -5,7 +5,7 @@
 #include "AbstractVM.hpp"
 
 AbstractVM::AbstractVM() = default;
-
+AbstractVM::~AbstractVM() = default;
 AbstractVM::AbstractVM(const char * filename)
 {
 	std::string str;
@@ -22,6 +22,7 @@ AbstractVM::AbstractVM(const char * filename)
 		//TODO check if exit was OK
 		file.close();
 	}
+	//TODO cout usage string
 	else std::cout << "Unable to open file";
 }
 
