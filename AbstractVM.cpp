@@ -5,7 +5,15 @@
 #include "AbstractVM.hpp"
 
 AbstractVM::AbstractVM() = default;
+
 AbstractVM::~AbstractVM() = default;
+
+AbstractVM &AbstractVM::operator=(const AbstractVM &rhs) {
+	_container = rhs._container;
+	_containerSize = rhs._containerSize;
+	return *this;
+}
+
 AbstractVM::AbstractVM(const char *filename)
 {
 	std::string str;
@@ -13,22 +21,22 @@ AbstractVM::AbstractVM(const char *filename)
 
 	if (!filename)
 		while (getline(std::cin, str))
-			setExpression(str);
+			_setExpression(str);
 	else if (file.is_open())
 	{
 		_fromFile = true;
 		while ( getline (file,str) )
-			setExpression(str);
+			_setExpression(str);
 		file.close();
 	}
 	//TODO cout usage string
 	else std::cout << "Unable to open file";
 }
 
-void AbstractVM::setExpression(std::string expression)
+void AbstractVM::_setExpression(std::string expression)
 {
 	try {
-		checkExpression(expression);
+		_checkExpression(expression);
         for (size_t i = 0; !isalpha(expression[i]); i++)
 			expression.erase(i--, 1);
         std::array<std::string, 3> result = {"", "", ""};
@@ -38,9 +46,9 @@ void AbstractVM::setExpression(std::string expression)
 				  std::sregex_token_iterator(),
 				  result.begin());
 		if (!result[2].empty())
-			AbstractVM::execute(result[0], result[1], result[2]);
+			AbstractVM::_execute(result[0], result[1], result[2]);
 		else
-			AbstractVM::execute(result[0]);
+			AbstractVM::_execute(result[0]);
 	}
 	catch (Exception::InputException &exception) {
 		_out << "Line " << _line << ": Input Exception "
@@ -49,7 +57,7 @@ void AbstractVM::setExpression(std::string expression)
 	catch (Exception::WrongExitException &exception) {
 		_out << "Line " << _line << ": Wrong Exit Exception: " << exception.what() << std::endl;
 		if (strcmp(exception.what(), "The program does not have an exit instruction") == 0)
-			terminate();
+			_terminate();
 	}
 	catch (Exception::SmallStackException &exception) {
 		_out << "Line " << _line << ": Less that two values in stack: " << exception.what() << std::endl;
@@ -71,7 +79,7 @@ void AbstractVM::setExpression(std::string expression)
 	}
 }
 
-void AbstractVM::push(std::string const &value, eOperandType type)
+void AbstractVM::_push(std::string const &value, eOperandType type)
 {
 	Factory factory = Factory();
 	const IOperand *operand = factory.createOperand(type, value);
@@ -79,38 +87,38 @@ void AbstractVM::push(std::string const &value, eOperandType type)
 	_containerSize++;
 };
 
-void AbstractVM::pop() {
+void AbstractVM::_pop() {
     if (_containerSize < 1) {
         throw Exception::EmptyStackException("Instruction \"pop\" on an empty stack");
     }
     _container.pop_front();
 }
 
-void AbstractVM::assert(std::string const &value, eOperandType type)
+void AbstractVM::_assert(std::string const &value, eOperandType type)
 {
 	if (_container.front()->toString() != value && type)
 		throw Exception::AssertionException("Values are not equal");
 }
 
-void AbstractVM::add() {
+void AbstractVM::_add() {
     _unstackElements();
 	_container.push_front(*_buff[1] + *_buff[0]);
 	_containerSize++;
 }
 
-void AbstractVM::sub() {
+void AbstractVM::_sub() {
     _unstackElements();
 	_container.push_front(*_buff[1] - *_buff[0]);
 	_containerSize++;
 }
 
-void AbstractVM::mul() {
+void AbstractVM::_mul() {
     _unstackElements();
 	_container.push_front(*_buff[1] * *_buff[0]);
 	_containerSize++;
 }
 
-void AbstractVM::div() {
+void AbstractVM::_div() {
 	if (_buff[0]->toString() == "0") {
 		throw Exception::DivisionByZeroException("Division by zero");
 	}
@@ -119,7 +127,7 @@ void AbstractVM::div() {
 	_containerSize++;
 }
 
-void AbstractVM::mod() {
+void AbstractVM::_mod() {
 	if (_buff[0]->toString() == "0") {
 		throw Exception::DivisionByZeroException("Modulo by zero");
 	}
@@ -128,12 +136,12 @@ void AbstractVM::mod() {
 	_containerSize++;
 }
 
-std::string AbstractVM::checkExpression(std::string expression) {
+void AbstractVM::_checkExpression(std::string expression) {
 	_line++;
 	if (expression == ";;")
 	{
 		if (_isExit && !_fromFile)
-            terminate();
+            _terminate();
 		else if (!_isExit && !_fromFile)
 		{
 			_isExit = true;
@@ -147,16 +155,15 @@ std::string AbstractVM::checkExpression(std::string expression) {
 					   "(pop|dump|add|sub|mul|div|mod|print|exit))(\\s*)?$");
 	if (!std::regex_match(expression.begin(), expression.end(), reg))
 		throw Exception::InputException("Unknown instruction or invalid input");
-	return expression;
 }
 
-void AbstractVM::dump() {
+void AbstractVM::_dump() {
 	for (const auto iterator : _container) {
 		_out << stod(iterator->toString()) << std::endl;
 	}
 };
 
-void AbstractVM::print() {
+void AbstractVM::_print() {
 	if (!_containerSize)
 		throw Exception::EmptyStackException("Instruction \"print\" on an empty stack");
 	else if (_container.front()->getType() == Int8)
@@ -167,14 +174,14 @@ void AbstractVM::print() {
 		throw Exception::AssertionException("Printing failed, the first operand in stack is not Int8");
 }
 
-void AbstractVM::quit() {
+void AbstractVM::_quit() {
 	if (_fromFile)
-		terminate();
+		_terminate();
 	else
 		_isExit = true;
 }
 
-void AbstractVM::terminate() {
+void AbstractVM::_terminate() {
 	if (!_isExit && !_fromFile)
 		throw (Exception::WrongExitException("The program does not have an exit instruction"));
 	std::cout << _out.str();
@@ -182,20 +189,20 @@ void AbstractVM::terminate() {
 	exit(0);
 }
 
-void AbstractVM::execute(std::string operation) {
+void AbstractVM::_execute(std::string operation) {
 	if (_isExit)
 		throw (Exception::WrongExitException("The program has an exit instruction"));
 	std::map<std::string, void (AbstractVM::*)(void)> operations =
 	{
-		{"add", &AbstractVM::add},
-		{"dump", &AbstractVM::dump},
-		{"print", &AbstractVM::print},
-		{"pop", &AbstractVM::pop},
-		{"sub", &AbstractVM::sub},
-		{"mul", &AbstractVM::mul},
-		{"div", &AbstractVM::div},
-		{"mod", &AbstractVM::mod},
-		{"exit", &AbstractVM::quit},
+		{"add", &AbstractVM::_add},
+		{"dump", &AbstractVM::_dump},
+		{"print", &AbstractVM::_print},
+		{"pop", &AbstractVM::_pop},
+		{"sub", &AbstractVM::_sub},
+		{"mul", &AbstractVM::_mul},
+		{"div", &AbstractVM::_div},
+		{"mod", &AbstractVM::_mod},
+		{"exit", &AbstractVM::_quit},
 	};
 	(this->*operations[operation])();
 	if (_buff[0])
@@ -207,12 +214,12 @@ void AbstractVM::execute(std::string operation) {
 	}
 }
 
-void AbstractVM::execute(std::string command, std::string type, std::string num)
+void AbstractVM::_execute(std::string command, std::string type, std::string num)
 {
 	std::map<std::string, void (AbstractVM::*)(std::string const &, eOperandType type)> commands =
 	{
-		{"push", &AbstractVM::push},
-		{"assert", &AbstractVM::assert}
+		{"push", &AbstractVM::_push},
+		{"assert", &AbstractVM::_assert}
 	};
 	std::map<std::string, eOperandType> types =
 	{

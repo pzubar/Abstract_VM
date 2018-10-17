@@ -32,33 +32,29 @@ private:
 
     AbstractVM();
 	void _unstackElements();
-    void push(std::string const &value, eOperandType type);
-    void pop();
-    void dump();
-    void assert(std::string const &value, eOperandType type);
-    void add();
-    void sub();
-    void mul();
-    void div();
-    void mod();
-    void print();
-    void quit();
-    void terminate();
-    void execute(std::string operation);
-    void execute(std::string command, std::string type, std::string num);
-    std::string checkExpression(std::string expression);
+    void _push(std::string const &value, eOperandType type);
+    void _pop();
+    void _dump();
+    void _assert(std::string const &value, eOperandType type);
+    void _add();
+    void _sub();
+    void _mul();
+    void _div();
+    void _mod();
+    void _print();
+    void _quit();
+    void _terminate();
+    void _execute(std::string operation);
+    void _execute(std::string command, std::string type, std::string num);
+	void _setExpression(std::string expression);
+    void _checkExpression(std::string expression);
 
 public:
     explicit AbstractVM(const char *filename);
-
-    AbstractVM &operator=(const AbstractVM &rhs) {
-		_container = rhs._container;
-		_out << rhs._out.rdbuf();
-		return *this;
-	}
-
+    AbstractVM &operator=(const AbstractVM &rhs);
+	AbstractVM (const AbstractVM &rhs);
 	~AbstractVM();
-	void setExpression(std::string expression);
+
 };
 
 
