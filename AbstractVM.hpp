@@ -22,13 +22,13 @@
 
 class AbstractVM {
 private:
-    std::forward_list<const IOperand *> _container;
-    size_t                              _containerSize = 0;
-    int                                 _line = 0;
-    bool                                _isExit = false;
-    bool                                _fromFile = false;
-    std::string                         _output;
+    std::forward_list<const IOperand *>	_container;
+    size_t								_containerSize = 0;
+    int									_line = 0;
+    bool								_isExit = false;
+    bool								_fromFile = false;
 	const IOperand *                    _buff[2];
+	std::stringstream					_out;
 
     AbstractVM();
 	void _unstackElements();
@@ -50,6 +50,13 @@ private:
 
 public:
     explicit AbstractVM(const char *filename);
+
+    AbstractVM &operator=(const AbstractVM &rhs) {
+		_container = rhs._container;
+		_out << rhs._out.rdbuf();
+		return *this;
+	}
+
 	~AbstractVM();
 	void setExpression(std::string expression);
 };
