@@ -1,7 +1,3 @@
-//
-// Created by Petro ZUBAR on 02.09.2018.
-//
-
 #ifndef AVM_IOPERAND_HPP
 #define AVM_IOPERAND_HPP
 
@@ -22,4 +18,4 @@ public:
     virtual ~IOperand( void ) {}
 };
 
-#endif //AVM_IOPERAND_HPP
+#endif

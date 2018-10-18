@@ -32,34 +32,34 @@ class Operand : public IOperand
 	{
 		_strval = std::to_string(val);
 	};
-	int getPrecision() const {
+	int getPrecision() const override {
 		return this->getType();
 	}
-	eOperandType getType() const
+	eOperandType getType() const override
 	{
 		return this->_type;
 	}
-	std::string const &toString() const
+	std::string const &toString() const override
 	{
 		return _strval;
 	}
-	virtual IOperand const *operator+(IOperand const &rhs) const
+	IOperand const *operator+(IOperand const &rhs) const override
 	{
 		return new Operand<int32_t>((this->_value) + std::stod(rhs.toString()), _getBiggerType(rhs));
 	}
-	virtual IOperand const *operator-(IOperand const &rhs) const
+	IOperand const *operator-(IOperand const &rhs) const override
 	{
 		return new Operand<int32_t>((this->_value) - std::stod(rhs.toString()), _getBiggerType(rhs));
 	}
-	virtual IOperand const *operator*(IOperand const &rhs) const
+	IOperand const *operator*(IOperand const &rhs) const override
 	{
 		return new Operand<int32_t>((this->_value) * std::stod(rhs.toString()), _getBiggerType(rhs));
 	}
-	virtual IOperand const *operator/(IOperand const &rhs) const
+	IOperand const *operator/(IOperand const &rhs) const override
 	{
 		return new Operand<int32_t>((this->_value) / std::stod(rhs.toString()), _getBiggerType(rhs));
 	}
-	virtual IOperand const *operator%(IOperand const &rhs) const
+	IOperand const *operator%(IOperand const &rhs) const override
 	{
 		return new Operand<int32_t>(std::fmod((this->_value),std::stod(rhs.toString())), _getBiggerType(rhs));
 	}

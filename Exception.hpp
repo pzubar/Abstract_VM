@@ -194,6 +194,11 @@ class Exception
         }
     };
 
+    class NoExitException : public std::exception
+    {
+        std::logic_error _error;
+    };
+
 };
 
 

@@ -60,4 +60,4 @@ class AbstractVM {
 };
 
 
-#endif //AVM_ABSTRACTVM_HPP
+#endif
