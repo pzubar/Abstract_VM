@@ -151,8 +151,8 @@ void AbstractVM::_checkExpression(std::string expression) {
 	}
 	expression = expression.substr(0, expression.find(';', 0));
 	std::regex reg(	"(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
-					   "((float|double)(\\([-]?\\d*[,]*?\\d+\\)))))|"
-					   "(pop|dump|add|sub|mul|div|mod|print|exit))(\\s*)?$");
+					   "((float|double)(\\([-]?\\d*[.]*?\\d+\\)))))|"
+					   "(pop|dump|add|sub|mul|div|mod|print|exit|sort))(\\s*)?$");
 	if (!std::regex_match(expression.begin(), expression.end(), reg))
 		throw Exception::InputException("Unknown instruction or invalid input");
 }
@@ -202,6 +202,7 @@ void AbstractVM::_execute(std::string operation) {
 		{"mul", &AbstractVM::_mul},
 		{"div", &AbstractVM::_div},
 		{"mod", &AbstractVM::_mod},
+		{"sort", &AbstractVM::_sort},
 		{"exit", &AbstractVM::_quit},
 	};
 	(this->*operations[operation])();
@@ -242,3 +243,11 @@ void AbstractVM::_unstackElements()
 	_container.pop_front();
 	_containerSize -= 2;
 };
+
+void  AbstractVM::_sort() {
+    _container.sort([](const IOperand * first, const IOperand * second)
+   {
+		return stod(first->toString()) < stod(second->toString());
+   });
+}
+
