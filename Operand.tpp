@@ -19,7 +19,9 @@ class Operand : public IOperand
 	std::string _strval;
 	eOperandType _type;
 
-	Operand();
+    Operand() {
+        _type = 0;
+    };
 	eOperandType _getBiggerType(IOperand const &rhs) const{
 		return static_cast<eOperandType>(std::max(this->getPrecision(), rhs.getPrecision()));
 	};
@@ -30,14 +32,14 @@ class Operand : public IOperand
 	{
 		_strval = std::to_string(val);
 	};
-	int getPrecision( void ) const {
+	int getPrecision() const {
 		return this->getType();
 	}
-	eOperandType getType(void) const
+	eOperandType getType() const
 	{
 		return this->_type;
 	}
-	virtual std::string const &toString(void) const
+	std::string const &toString() const
 	{
 		return _strval;
 	}

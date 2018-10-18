@@ -287,6 +287,6 @@ void AbstractVM::_min() {
 	{
 	  return stod(first->toString()) < stod(second->toString());
 	});
-	_out << "max: " << stod(buff.front()->toString()) << std::endl;
+	_out << "min: " << stod(buff.front()->toString()) << std::endl;
 	buff.clear();
 }

@@ -8,7 +8,7 @@
 
 #include <climits>
 #include <float.h>
-#include "Operand.hpp"
+#include "Operand.tpp"
 #include "Exception.hpp"
 
 class Factory
