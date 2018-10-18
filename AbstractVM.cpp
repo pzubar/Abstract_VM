@@ -25,9 +25,12 @@ AbstractVM::AbstractVM(const char *filename)
 		std::cout << "Unable to open file";
 }
 
-AbstractVM::~AbstractVM() = default;
+AbstractVM::~AbstractVM() {
+	_container.clear();
+}
 
-AbstractVM &AbstractVM::operator=(const AbstractVM &rhs) {
+AbstractVM &AbstractVM::operator=(const AbstractVM &rhs)
+{
 	_container = rhs._container;
 	_containerSize = rhs._containerSize;
 	return *this;
@@ -191,7 +194,7 @@ void AbstractVM::_terminate() {
 	if (!_isExit && !_fromFile)
 		throw (Exception::WrongExitException("The program does not have an exit instruction"));
 	std::cout << _out.str();
-//    system("leaks avm");
+    system("leaks avm");
 	exit(0);
 }
 
