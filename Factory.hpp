@@ -1,7 +1,3 @@
-//
-// Created by Petro ZUBAR on 9/9/18.
-//
-
 #ifndef ABSTRACTVM_FACTORY_HPP
 #define ABSTRACTVM_FACTORY_HPP
 
@@ -21,10 +17,11 @@ class Factory
 	IOperand const * createDouble( std::string const & value ) const;
 
   public:
-	Factory(){};
-	~Factory(){};
-
+	Factory();
+	Factory &operator=(const Factory &rhs);
+	Factory(const Factory &rhs);
+	~Factory();
 	IOperand const * createOperand( eOperandType type, std::string const & value ) const;
 
 };
-#endif //ABSTRACTVM_FACTORY_HPP
+#endif

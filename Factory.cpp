@@ -45,3 +45,12 @@ IOperand const * Factory::createOperand( eOperandType type, std::string const & 
     };
     return (this->*arr[type])(value);
 };
+
+Factory::Factory() = default;
+Factory::~Factory() = default;
+Factory::Factory(const Factory &rhs) {
+    *this = rhs;
+}
+Factory& Factory::operator=(const Factory &rhs) {
+    return *this;
+}

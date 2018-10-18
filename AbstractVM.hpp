@@ -17,9 +17,6 @@
 #include "Operand.tpp"
 #include "Exception.hpp"
 
-// TODO: refacror exception logic
-// TODO: test absent "exit" option bug
-
 class AbstractVM {
     private:
         std::forward_list<const IOperand *>	_container;
