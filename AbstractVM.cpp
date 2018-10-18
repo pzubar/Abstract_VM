@@ -21,8 +21,8 @@ AbstractVM::AbstractVM(const char *filename)
 			_setExpression(str);
 		file.close();
 	}
-	//TODO cout usage string
-	else std::cout << "Unable to open file";
+	else
+		std::cout << "Unable to open file";
 }
 
 AbstractVM::~AbstractVM() = default;
@@ -61,8 +61,10 @@ void AbstractVM::_setExpression(std::string expression)
 	}
 	catch (Exception::WrongExitException &exception) {
 		_out << "Line " << _line << ": Wrong Exit Exception: " << exception.what() << std::endl;
-		if (strcmp(exception.what(), "The program does not have an exit instruction") == 0)
-			_terminate();
+	}
+	catch  (Exception::NoExitException &exception) {
+		_out << "Line " << _line << ": No Exit Exception: " << exception.what() << std::endl;
+		_terminate();
 	}
 	catch (Exception::SmallStackException &exception) {
 		_out << "Line " << _line << ": Less that two values in stack: " << exception.what() << std::endl;
@@ -150,9 +152,8 @@ void AbstractVM::_checkExpression(std::string expression) {
 		else if (!_isExit && !_fromFile)
 		{
 			_isExit = true;
-			throw Exception::WrongExitException("The program does not have an exit instruction");
+			throw Exception::NoExitException("The program does not have an exit instruction");
 		}
-
 	}
 	expression = expression.substr(0, expression.find(';', 0));
 	std::regex reg(	"(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"

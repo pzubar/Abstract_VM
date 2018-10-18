@@ -196,10 +196,20 @@ class Exception
 
     class NoExitException : public std::exception
     {
-        std::logic_error _error;
+        private:
+            std::logic_error _error;
+        public:
+            explicit NoExitException(const char *msg) : _error(msg) {}
+            const char *what() const noexcept override {
+                return _error.what();
+            }
+            NoExitException(const std::logic_error &rhs) : _error(rhs) {
+                *this = rhs;
+            };
+            NoExitException &operator=(const NoExitException &rhs) = default;
+            ~NoExitException() override = default;
     };
 
 };
 
-
-#endif //ABSTRACTVM_EXCEPTION_HPP
+#endif
