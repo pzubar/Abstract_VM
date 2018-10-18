@@ -45,6 +45,8 @@ private:
     void _quit();
     void _terminate();
     void _sort();
+    void _max();
+    void _min();
     void _execute(std::string operation);
     void _execute(std::string command, std::string type, std::string num);
 	void _setExpression(std::string expression);
@@ -53,7 +55,7 @@ private:
 public:
     explicit AbstractVM(const char *filename);
     AbstractVM &operator=(const AbstractVM &rhs);
-	AbstractVM (const AbstractVM &rhs);
+	AbstractVM(const AbstractVM &rhs);
 	~AbstractVM();
 
 };

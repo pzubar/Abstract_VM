@@ -6,14 +6,6 @@
 
 AbstractVM::AbstractVM() = default;
 
-AbstractVM::~AbstractVM() = default;
-
-AbstractVM &AbstractVM::operator=(const AbstractVM &rhs) {
-	_container = rhs._container;
-	_containerSize = rhs._containerSize;
-	return *this;
-}
-
 AbstractVM::AbstractVM(const char *filename)
 {
 	std::string str;
@@ -31,6 +23,19 @@ AbstractVM::AbstractVM(const char *filename)
 	}
 	//TODO cout usage string
 	else std::cout << "Unable to open file";
+}
+
+AbstractVM::~AbstractVM() = default;
+
+AbstractVM &AbstractVM::operator=(const AbstractVM &rhs) {
+	_container = rhs._container;
+	_containerSize = rhs._containerSize;
+	return *this;
+}
+
+AbstractVM::AbstractVM(const AbstractVM &rhs)
+{
+	*this = rhs;
 }
 
 void AbstractVM::_setExpression(std::string expression)
@@ -152,7 +157,7 @@ void AbstractVM::_checkExpression(std::string expression) {
 	expression = expression.substr(0, expression.find(';', 0));
 	std::regex reg(	"(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
 					   "((float|double)(\\([-]?\\d*[.]*?\\d+\\)))))|"
-					   "(pop|dump|add|sub|mul|div|mod|print|exit|sort))(\\s*)?$");
+					   "(pop|dump|add|sub|mul|div|mod|print|exit|sort|max|min))(\\s*)?$");
 	if (!std::regex_match(expression.begin(), expression.end(), reg))
 		throw Exception::InputException("Unknown instruction or invalid input");
 }
@@ -203,6 +208,8 @@ void AbstractVM::_execute(std::string operation) {
 		{"div", &AbstractVM::_div},
 		{"mod", &AbstractVM::_mod},
 		{"sort", &AbstractVM::_sort},
+		{"max", &AbstractVM::_max},
+		{"min", &AbstractVM::_min},
 		{"exit", &AbstractVM::_quit},
 	};
 	(this->*operations[operation])();
@@ -217,6 +224,8 @@ void AbstractVM::_execute(std::string operation) {
 
 void AbstractVM::_execute(std::string command, std::string type, std::string num)
 {
+	if (_isExit)
+		throw (Exception::WrongExitException("The program has an exit instruction"));
 	std::map<std::string, void (AbstractVM::*)(std::string const &, eOperandType type)> commands =
 	{
 		{"push", &AbstractVM::_push},
@@ -230,6 +239,7 @@ void AbstractVM::_execute(std::string command, std::string type, std::string num
 		{"float", Float},
 		{"double", Double}
 	};
+
 	(this->*commands[command])(num, types[type]);
 }
 
@@ -245,9 +255,38 @@ void AbstractVM::_unstackElements()
 };
 
 void  AbstractVM::_sort() {
-    _container.sort([](const IOperand * first, const IOperand * second)
-   {
+	_container.sort([](const IOperand * first, const IOperand * second)
+	{
 		return stod(first->toString()) < stod(second->toString());
-   });
+	});
 }
 
+void AbstractVM::_max() {
+	std::forward_list<const IOperand *>	buff;
+
+	if (_containerSize < 1) {
+		throw Exception::EmptyStackException("Instruction \"max\" on an empty stack");
+	}
+	buff = _container;
+	buff.sort([](const IOperand * first, const IOperand * second)
+	{
+		return stod(first->toString()) > stod(second->toString());
+	});
+	_out << "max: " << stod(buff.front()->toString()) << std::endl;
+	buff.clear();
+}
+
+void AbstractVM::_min() {
+	std::forward_list<const IOperand *>	buff;
+
+	if (_containerSize < 1) {
+		throw Exception::EmptyStackException("Instruction \"min\" on an empty stack");
+	}
+	buff = _container;
+	buff.sort([](const IOperand * first, const IOperand * second)
+	{
+	  return stod(first->toString()) < stod(second->toString());
+	});
+	_out << "max: " << stod(buff.front()->toString()) << std::endl;
+	buff.clear();
+}
