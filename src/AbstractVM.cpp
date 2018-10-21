@@ -1,8 +1,4 @@
-//
-// Created by Petro ZUBAR on 02.09.2018.
-//
-
-#include "AbstractVM.hpp"
+#include "../includes/AbstractVM.hpp"
 
 AbstractVM::AbstractVM() = default;
 
@@ -19,6 +15,16 @@ AbstractVM::AbstractVM(const char *filename)
 		_fromFile = true;
 		while ( getline (file,str) )
 			_setExpression(str);
+        try {
+            if (!_isExit) {
+                _isExit = !_isExit;
+                throw Exception::NoExitException("No \"exit\" command in file");
+            }
+        }
+        catch (Exception::NoExitException &exception) {
+            _out << "No Exit Exception: " << exception.what() << std::endl;
+            _terminate();
+        }
 		file.close();
 	}
 	else
@@ -47,7 +53,7 @@ void AbstractVM::_setExpression(std::string expression)
 		_checkExpression(expression);
         for (size_t i = 0; !isalpha(expression[i]); i++)
 			expression.erase(i--, 1);
-        std::array<std::string, 3> result = {"", "", ""};
+        std::array<std::string, 3> result = {{"","",""}};
 
 		std::regex splitBy("\\s+|\\(|\\)");
 		std::copy(std::sregex_token_iterator(expression.begin(), expression.end(), splitBy, -1),

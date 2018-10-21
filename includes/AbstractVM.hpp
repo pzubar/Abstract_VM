@@ -14,7 +14,7 @@
 #include <sstream>
 #include <fstream>
 #include "Factory.hpp"
-#include "Operand.tpp"
+#include "Operand.hpp"
 #include "Exception.hpp"
 
 class AbstractVM {

@@ -4,7 +4,7 @@
 
 #include <climits>
 #include <float.h>
-#include "Operand.tpp"
+#include "Operand.hpp"
 #include "Exception.hpp"
 
 class Factory

@@ -1,4 +1,4 @@
-#include "Factory.hpp"
+#include "../includes/Factory.hpp"
 
 IOperand const * Factory::createInt8( std::string const & value ) const {
     if (stod(value) > SCHAR_MAX)
@@ -48,9 +48,7 @@ IOperand const * Factory::createOperand( eOperandType type, std::string const & 
 
 Factory::Factory() = default;
 Factory::~Factory() = default;
+Factory& Factory::operator=(const Factory &rhs) = default;
 Factory::Factory(const Factory &rhs) {
     *this = rhs;
-}
-Factory& Factory::operator=(const Factory &rhs) {
-    return *this;
 }
