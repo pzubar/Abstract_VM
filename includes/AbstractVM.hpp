@@ -5,6 +5,9 @@
 #ifndef AVM_ABSTRACTVM_HPP
 #define AVM_ABSTRACTVM_HPP
 
+//TODO Read file to EOF even after exit
+//TODO Fix div by zero
+
 #include <iostream>
 #include <forward_list>
 #include <map>
@@ -16,6 +19,10 @@
 #include "Factory.hpp"
 #include "Operand.hpp"
 #include "Exception.hpp"
+
+#define RED "\033[0;31m"
+#define GREEN "\033[1;32m"
+#define CLOSE "\033[0m"
 
 class AbstractVM {
     private:

@@ -66,7 +66,7 @@ void AbstractVM::_setExpression(std::string expression)
 			AbstractVM::_execute(result[0]);
 	}
 	catch (Exception::InputException &exception) {
-		_out << "Line " << _line << ": Input Exception "
+		_out << RED << "Line " << _line << ": " << CLOSE "Input Exception "
 			<< exception.what() << "(expression: " << expression << ")" << std::endl;
 	}
 	catch (Exception::WrongExitException &exception) {
@@ -139,7 +139,7 @@ void AbstractVM::_mul() {
 }
 
 void AbstractVM::_div() {
-	if (_buff[0]->toString() == "0") {
+	if (_container.front()->toString() == "0") {
 		throw Exception::DivisionByZeroException("Division by zero");
 	}
     _unstackElements();
@@ -148,7 +148,7 @@ void AbstractVM::_div() {
 }
 
 void AbstractVM::_mod() {
-	if (_buff[0]->toString() == "0") {
+	if (_container.front()->toString() == "0") {
 		throw Exception::DivisionByZeroException("Modulo by zero");
 	}
     _unstackElements();
@@ -204,7 +204,7 @@ void AbstractVM::_terminate() {
 	if (!_isExit && !_fromFile)
 		throw (Exception::WrongExitException("The program does not have an exit instruction"));
 	std::cout << _out.str();
-    system("leaks avm");
+//    system("leaks avm");
 	exit(0);
 }
 
@@ -253,7 +253,7 @@ void AbstractVM::_execute(std::string command, std::string type, std::string num
 		{"float", Float},
 		{"double", Double}
 	};
-
+	_out << GREEN << "Line " << _line << ": " << CLOSE << command << " " << type << "(" << num << ")" << std::endl;
 	(this->*commands[command])(num, types[type]);
 }
 
