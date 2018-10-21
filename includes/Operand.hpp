@@ -45,23 +45,23 @@ class Operand : public IOperand
 	}
 	IOperand const *operator+(IOperand const &rhs) const override
 	{
-		return new Operand<int32_t>((this->_value) + std::stod(rhs.toString()), _getBiggerType(rhs));
+		return new Operand<double>((this->_value) + std::stod(rhs.toString()), _getBiggerType(rhs));
 	}
 	IOperand const *operator-(IOperand const &rhs) const override
 	{
-		return new Operand<int32_t>((this->_value) - std::stod(rhs.toString()), _getBiggerType(rhs));
+		return new Operand<double>((this->_value) - std::stod(rhs.toString()), _getBiggerType(rhs));
 	}
 	IOperand const *operator*(IOperand const &rhs) const override
 	{
-		return new Operand<int32_t>((this->_value) * std::stod(rhs.toString()), _getBiggerType(rhs));
+		return new Operand<double>((this->_value) * std::stod(rhs.toString()), _getBiggerType(rhs));
 	}
 	IOperand const *operator/(IOperand const &rhs) const override
 	{
-		return new Operand<int32_t>((this->_value) / std::stod(rhs.toString()), _getBiggerType(rhs));
+		return new Operand<double>((this->_value) / std::stod(rhs.toString()), _getBiggerType(rhs));
 	}
 	IOperand const *operator%(IOperand const &rhs) const override
 	{
-		return new Operand<int32_t>(std::fmod((this->_value),std::stod(rhs.toString())), _getBiggerType(rhs));
+		return new Operand<double>(std::fmod((this->_value), std::stod(rhs.toString())), _getBiggerType(rhs));
 	}
 };
 

@@ -112,7 +112,10 @@ void AbstractVM::_pop() {
 
 void AbstractVM::_assert(std::string const &value, eOperandType type)
 {
-	if (_container.front()->toString() != value && type)
+	if (_container.front()->getType() == Float && _container.front()->toString() != std::to_string(std::stof(value)))
+		throw Exception::AssertionException("Values are not equal");
+	else if (_container.front()->getType() != Float &&
+		_container.front()->toString() != std::to_string(std::stod(value)) && type)
 		throw Exception::AssertionException("Values are not equal");
 }
 
