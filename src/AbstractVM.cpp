@@ -51,6 +51,7 @@ void AbstractVM::_setExpression(std::string expression)
 {
 	try {
 		_checkExpression(expression);
+		expression = expression.substr(0, expression.find(';', 0));
         for (size_t i = 0; !isalpha(expression[i]); i++)
 			expression.erase(i--, 1);
         std::array<std::string, 3> result = {{"","",""}};
