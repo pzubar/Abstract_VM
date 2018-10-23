@@ -1,4 +1,4 @@
-#include "../includes/Factory.hpp"
+#include "Factory.hpp"
 
 IOperand const * Factory::createInt8( std::string const & value ) const {
     if (stod(value) > SCHAR_MAX)

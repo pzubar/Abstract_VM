@@ -19,7 +19,7 @@ $(NAME): $(OBJECTS)
 	@$(COMPILER) $(FLAGS) -o $(NAME) $(OBJECTS)
 
 $(D_OBJ)%.o: $(D_SRC)%.cpp $(addprefix $(D_INCLUDES), $(INCLUDES))
-	@$(COMPILER) $(FLAGS) -c -o $@ $<
+	@$(COMPILER) $(FLAGS) -I $(D_INCLUDES) -c -o $@ $<
 
 clean:
 	@rm -rf $(D_OBJ)

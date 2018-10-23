@@ -1,5 +1,5 @@
 
-#include "../includes/AbstractVM.hpp"
+#include "AbstractVM.hpp"
 
 
 int main(int argc, const char* argv[])

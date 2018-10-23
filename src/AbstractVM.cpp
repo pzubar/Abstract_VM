@@ -1,4 +1,4 @@
-#include "../includes/AbstractVM.hpp"
+#include "AbstractVM.hpp"
 
 AbstractVM::AbstractVM() = default;
 
@@ -81,22 +81,28 @@ void AbstractVM::_setExpression(std::string expression)
 		_terminate();
 	}
 	catch (Exception::SmallStackException &exception) {
-		_out << "Line " << _line << ": Less that two values in stack: " << exception.what() << std::endl;
+		_out << RED << "Line " << _line << ": " << CLOSE << "Less that two values in stack: "
+			<< exception.what() << std::endl;
 	}
 	catch (Exception::OverflowException &exception) {
-		_out << "Line " << _line << ": Overflow exception: " << exception.what() << std::endl;
+		_out << RED << "Line " << _line << ": " << CLOSE << "Overflow exception: " <<
+			exception.what() << std::endl;
 	}
 	catch (Exception::UnderflowException &exception) {
-		_out << "Line " << _line << ": Underflow exception: " << exception.what() << std::endl;
+		_out << RED << "Line " << _line << ": " << CLOSE << "Underflow exception: " <<
+			exception.what() << std::endl;
 	}
 	catch (Exception::EmptyStackException &exception) {
-		_out << "Line " << _line << ": Empty stack exception: " << exception.what() << std::endl;
+		_out << RED << "Line " << _line << ": " << CLOSE << "Empty stack exception: " <<
+			exception.what() << std::endl;
 	}
 	catch (Exception::DivisionByZeroException &exception) {
-		_out << "Line " << _line << ": Exception: " << exception.what() << std::endl;
+		_out << RED << "Line " << _line << ": " << CLOSE << "Exception: " <<
+			exception.what() << std::endl;
 	}
 	catch (Exception::AssertionException &exception) {
-		_out << "Line " << _line << ": Assertion Exception: " << exception.what() << std::endl;
+		_out << RED << "Line " << _line << ": " << CLOSE << "Assertion Exception: " <<
+			exception.what() << std::endl;
 	}
 }
 
