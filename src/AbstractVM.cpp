@@ -64,8 +64,7 @@ void AbstractVM::_setExpression(std::string expression)
 		for (size_t i = 0; !isalpha(expression[i]); i++)
 			expression.erase(i--, 1);
 		std::array<std::string, 3> result = {{"", "", ""}};
-
-		std::regex splitBy("\\s+|\\(|\\)");
+		std::regex splitBy{R"(\s+|\(|\))"};
 		std::copy(std::sregex_token_iterator(expression.begin(), expression.end(), splitBy, -1),
 				  std::sregex_token_iterator(),
 				  result.begin());
