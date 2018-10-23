@@ -72,10 +72,12 @@ void AbstractVM::_setExpression(std::string expression)
 			<< exception.what() << "(expression: " << expression << ")" << std::endl;
 	}
 	catch (Exception::WrongExitException &exception) {
-		_out << "Line " << _line << ": Wrong Exit Exception: " << exception.what() << std::endl;
+		_out << RED << "Line " << _line << ": " << CLOSE << "Wrong Exit Exception: "
+			<< exception.what() << std::endl;
 	}
 	catch  (Exception::NoExitException &exception) {
-		_out << "Line " << _line << ": No Exit Exception: " << exception.what() << std::endl;
+		_out << RED << "Line " << _line << ": " << CLOSE << "No Exit Exception: "
+			<< exception.what() << std::endl;
 		_terminate();
 	}
 	catch (Exception::SmallStackException &exception) {
@@ -107,7 +109,7 @@ void AbstractVM::_push(std::string const &value, eOperandType type)
 };
 
 void AbstractVM::_pop() {
-    if (_containerSize < 1) {
+    if (!_containerSize) {
         throw Exception::EmptyStackException("Instruction \"pop\" on an empty stack");
     }
     _container.pop_front();
@@ -115,6 +117,9 @@ void AbstractVM::_pop() {
 
 void AbstractVM::_assert(std::string const &value, eOperandType type)
 {
+	if (!_containerSize) {
+		throw Exception::EmptyStackException("Instruction \"asert\" on an empty stack");
+	}
 	if (_container.front()->getType() == Float && _container.front()->toString() != std::to_string(std::stof(value)))
 		throw Exception::AssertionException("Values are not equal");
 	else if (_container.front()->getType() != Float &&
@@ -126,18 +131,21 @@ void AbstractVM::_add() {
     _unstackElements();
 	_container.push_front(*_buff[1] + *_buff[0]);
 	_containerSize++;
+	_out << GREEN << "Line " << _line << ": " << CLOSE << "add" << std::endl;
 }
 
 void AbstractVM::_sub() {
     _unstackElements();
 	_container.push_front(*_buff[1] - *_buff[0]);
 	_containerSize++;
+	_out << GREEN << "Line " << _line << ": " << CLOSE << "sub" << std::endl;
 }
 
 void AbstractVM::_mul() {
     _unstackElements();
 	_container.push_front(*_buff[1] * *_buff[0]);
 	_containerSize++;
+	_out << GREEN << "Line " << _line << ": " << CLOSE << "mul" << std::endl;
 }
 
 void AbstractVM::_div() {
@@ -147,6 +155,7 @@ void AbstractVM::_div() {
 	}
 	_container.push_front(*_buff[1] / *_buff[0]);
 	_containerSize++;
+	_out << GREEN << "Line " << _line << ": " << CLOSE << "div" << std::endl;
 }
 
 void AbstractVM::_mod() {
@@ -156,10 +165,13 @@ void AbstractVM::_mod() {
 	}
 	_container.push_front(*_buff[1] % *_buff[0]);
 	_containerSize++;
+	_out << GREEN << "Line " << _line << ": " << CLOSE << "mod" << std::endl;
 }
 
 void AbstractVM::_checkExpression(std::string expression) {
 	_line++;
+	if (_isExit)
+		throw (Exception::WrongExitException("The program has an \"exit\" instruction"));
 	if (expression == ";;")
 	{
 		if (_isExit && !_fromFile)
@@ -179,6 +191,7 @@ void AbstractVM::_checkExpression(std::string expression) {
 }
 
 void AbstractVM::_dump() {
+	_out << GREEN << "Line " << _line << ": " << CLOSE << "dump" << std::endl;
 	for (const auto iterator : _container) {
 		_out << stod(iterator->toString()) << std::endl;
 	}
@@ -189,6 +202,7 @@ void AbstractVM::_print() {
 		throw Exception::EmptyStackException("Instruction \"print\" on an empty stack");
 	else if (_container.front()->getType() == Int8)
 	{
+		_out << GREEN << "Line " << _line << ": " << CLOSE << "print" << std::endl;
 		_out << static_cast<char>(std::stoi(_container.front()->toString())) << std::endl;
 	}
 	else
@@ -208,8 +222,6 @@ void AbstractVM::_terminate() {
 }
 
 void AbstractVM::_execute(std::string operation) {
-	if (_isExit)
-		throw (Exception::WrongExitException("The program has an exit instruction"));
 	std::map<std::string, void (AbstractVM::*)(void)> operations =
 	{
 		{"add", &AbstractVM::_add},
@@ -226,7 +238,6 @@ void AbstractVM::_execute(std::string operation) {
 		{"exit", &AbstractVM::_quit},
 	};
 	(this->*operations[operation])();
-    _out << GREEN << "Line " << _line << ": " << CLOSE << operation << std::endl;
 	if (_buff[0])
 	{
 		delete (_buff[0]);
@@ -238,8 +249,6 @@ void AbstractVM::_execute(std::string operation) {
 
 void AbstractVM::_execute(std::string command, std::string type, std::string num)
 {
-	if (_isExit)
-		throw (Exception::WrongExitException("The program has an exit instruction"));
 	std::map<std::string, void (AbstractVM::*)(std::string const &, eOperandType type)> commands =
 	{
 		{"push", &AbstractVM::_push},
