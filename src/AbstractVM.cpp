@@ -61,6 +61,8 @@ void AbstractVM::_setExpression(std::string expression)
 	{
 		_checkExpression(expression);
 		expression = expression.substr(0, expression.find(';', 0));
+        if (expression.empty())
+            return;
 		for (size_t i = 0; !isalpha(expression[i]); i++)
 			expression.erase(i--, 1);
 		std::array<std::string, 3> result = {{"", "", ""}};
@@ -210,6 +212,8 @@ void AbstractVM::_checkExpression(std::string expression)
 		}
 	}
 	expression = expression.substr(0, expression.find(';', 0));
+	if (expression.empty())
+        return;
 	std::regex reg("(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
 				   "((float|double)(\\([-]?\\d*[.]*?\\d+\\)))))|"
 				   "(pop|dump|add|sub|mul|div|mod|print|exit|sort|max|min))(\\s*)?$");
@@ -249,7 +253,7 @@ void AbstractVM::_terminate()
 	if (!_isExit && !_fromFile)
 		throw(Exception::WrongExitException("The program does not have an exit instruction"));
 	std::cout << _out.str();
-	//    system("leaks avm");
+	system("leaks avm");
 	exit(0);
 }
 
