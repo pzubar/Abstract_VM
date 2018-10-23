@@ -19,6 +19,8 @@ AbstractVM::AbstractVM(const char *filename)
             if (!_isExit) {
                 _isExit = !_isExit;
                 throw Exception::NoExitException("No \"exit\" command in file");
+            } else {
+                _terminate();
             }
         }
         catch (Exception::NoExitException &exception) {
@@ -66,7 +68,7 @@ void AbstractVM::_setExpression(std::string expression)
 			AbstractVM::_execute(result[0]);
 	}
 	catch (Exception::InputException &exception) {
-		_out << RED << "Line " << _line << ": " << CLOSE "Input Exception "
+		_out << RED << "Line " << _line << ": " << CLOSE << "Input Exception: "
 			<< exception.what() << "(expression: " << expression << ")" << std::endl;
 	}
 	catch (Exception::WrongExitException &exception) {
@@ -139,19 +141,19 @@ void AbstractVM::_mul() {
 }
 
 void AbstractVM::_div() {
-	if (_container.front()->toString() == "0") {
+    _unstackElements();
+    if (std::stod(_buff[0]->toString()) == 0) {
 		throw Exception::DivisionByZeroException("Division by zero");
 	}
-    _unstackElements();
 	_container.push_front(*_buff[1] / *_buff[0]);
 	_containerSize++;
 }
 
 void AbstractVM::_mod() {
-	if (_container.front()->toString() == "0") {
+    _unstackElements();
+    if (std::stod(_buff[0]->toString()) == 0) {
 		throw Exception::DivisionByZeroException("Modulo by zero");
 	}
-    _unstackElements();
 	_container.push_front(*_buff[1] % *_buff[0]);
 	_containerSize++;
 }
@@ -194,10 +196,7 @@ void AbstractVM::_print() {
 }
 
 void AbstractVM::_quit() {
-	if (_fromFile)
-		_terminate();
-	else
-		_isExit = true;
+    _isExit = true;
 }
 
 void AbstractVM::_terminate() {
@@ -227,6 +226,7 @@ void AbstractVM::_execute(std::string operation) {
 		{"exit", &AbstractVM::_quit},
 	};
 	(this->*operations[operation])();
+    _out << GREEN << "Line " << _line << ": " << CLOSE << operation << std::endl;
 	if (_buff[0])
 	{
 		delete (_buff[0]);
@@ -253,8 +253,8 @@ void AbstractVM::_execute(std::string command, std::string type, std::string num
 		{"float", Float},
 		{"double", Double}
 	};
-	_out << GREEN << "Line " << _line << ": " << CLOSE << command << " " << type << "(" << num << ")" << std::endl;
 	(this->*commands[command])(num, types[type]);
+    _out << GREEN << "Line " << _line << ": " << CLOSE << command << " " << type << "(" << num << ")" << std::endl;
 }
 
 void AbstractVM::_unstackElements()
