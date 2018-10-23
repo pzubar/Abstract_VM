@@ -69,7 +69,7 @@ void AbstractVM::_setExpression(std::string expression)
 	}
 	catch (Exception::InputException &exception) {
 		_out << RED << "Line " << _line << ": " << CLOSE << "Input Exception: "
-			<< exception.what() << "(expression: " << expression << ")" << std::endl;
+			<< exception.what() << " (expression: " << expression << ")" << std::endl;
 	}
 	catch (Exception::WrongExitException &exception) {
 		_out << RED << "Line " << _line << ": " << CLOSE << "Wrong Exit Exception: "

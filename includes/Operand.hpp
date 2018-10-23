@@ -1,16 +1,11 @@
-//
-// Created by Petro ZUBAR on 02.09.2018.
-//
-
 #ifndef AVM_OPERAND_HPP
 #define AVM_OPERAND_HPP
 
-#include <iostream>
 #include <string>
-#include "IOperand.hpp"
-#include <algorithm>
 #include <cmath>
 #include <exception>
+#include "IOperand.hpp"
+
 template <class Type>
 class Operand : public IOperand
 {
@@ -19,12 +14,15 @@ class Operand : public IOperand
 	std::string _strval;
 	eOperandType _type;
 
-    Operand() {
-        _type = 0;
-    };
-	eOperandType _getBiggerType(IOperand const &rhs) const{
+	Operand()
+	{
+		_type = 0;
+	};
+	eOperandType _getBiggerType(IOperand const &rhs) const
+	{
 		return static_cast<eOperandType>(std::max(this->getPrecision(), rhs.getPrecision()));
 	};
+
   public:
 	Operand(Type val, eOperandType type)
 		: _value(val),
@@ -32,7 +30,8 @@ class Operand : public IOperand
 	{
 		_strval = std::to_string(val);
 	};
-	int getPrecision() const override {
+	int getPrecision() const override
+	{
 		return this->getType();
 	}
 	eOperandType getType() const override
@@ -65,4 +64,4 @@ class Operand : public IOperand
 	}
 };
 
-#endif //AVM_OPERAND_HPP
+#endif
