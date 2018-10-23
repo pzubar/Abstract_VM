@@ -317,13 +317,14 @@ void AbstractVM::_sort()
 	_container.sort([](const IOperand *first, const IOperand *second) {
 		return stod(first->toString()) < stod(second->toString());
 	});
+	_out << GREEN << "Line " << _line << ": " << CLOSE << "sort" << std::endl;
 }
 
 void AbstractVM::_max()
 {
 	std::forward_list<const IOperand *> buff;
 
-	if (_containerSize < 1)
+	if (!_containerSize)
 	{
 		throw Exception::EmptyStackException("Instruction \"max\" on an empty stack");
 	}
@@ -331,7 +332,8 @@ void AbstractVM::_max()
 	buff.sort([](const IOperand *first, const IOperand *second) {
 		return stod(first->toString()) > stod(second->toString());
 	});
-	_out << "max: " << stod(buff.front()->toString()) << std::endl;
+	_out << GREEN << "Line " << _line << ": " << CLOSE << "max" << std::endl;
+	_out << stod(buff.front()->toString()) << std::endl;
 	buff.clear();
 }
 
@@ -339,7 +341,7 @@ void AbstractVM::_min()
 {
 	std::forward_list<const IOperand *> buff;
 
-	if (_containerSize < 1)
+	if (!_containerSize)
 	{
 		throw Exception::EmptyStackException("Instruction \"min\" on an empty stack");
 	}
@@ -347,6 +349,7 @@ void AbstractVM::_min()
 	buff.sort([](const IOperand *first, const IOperand *second) {
 		return stod(first->toString()) < stod(second->toString());
 	});
-	_out << "min: " << stod(buff.front()->toString()) << std::endl;
+	_out << GREEN << "Line " << _line << ": " << CLOSE << "min" << std::endl;
+	_out << stod(buff.front()->toString()) << std::endl;
 	buff.clear();
 }
