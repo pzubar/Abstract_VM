@@ -60,8 +60,7 @@ void AbstractVM::_setExpression(std::string expression)
 	try
 	{
 		_checkExpression(expression);
-		expression = expression.substr(0, expression.find(';', 0));
-        if (expression.empty())
+        if (expression.empty() || expression == "\n")
             return;
 		for (size_t i = 0; !isalpha(expression[i]); i++)
 			expression.erase(i--, 1);
@@ -196,7 +195,7 @@ void AbstractVM::_mod()
 	_out << GREEN << "Line " << _line << ": " << CLOSE << "mod" << std::endl;
 }
 
-void AbstractVM::_checkExpression(std::string expression)
+void AbstractVM::_checkExpression(std::string & expression)
 {
 	_line++;
 	if (_isExit)
@@ -211,14 +210,13 @@ void AbstractVM::_checkExpression(std::string expression)
 			throw Exception::NoExitException("The program does not have an exit instruction");
 		}
 	}
-	expression = expression.substr(0, expression.find(';', 0));
-	if (expression.empty())
-        return;
+
 	std::regex reg("(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
 				   "((float|double)(\\([-]?\\d*[.]*?\\d+\\)))))|"
-				   "(pop|dump|add|sub|mul|div|mod|print|exit|sort|max|min))(\\s*)?$");
-	if (!std::regex_match(expression.begin(), expression.end(), reg))
+				   "(pop|dump|add|sub|mul|div|mod|print|exit|sort|max|min)|(\\;.*)|(\\n))(\\s*)?$");
+	if (!std::regex_match(expression.begin(), expression.end(), reg) && !expression.empty())
 		throw Exception::InputException("Unknown instruction or invalid input");
+    expression = expression.substr(0, expression.find(';', 0));
 }
 
 void AbstractVM::_dump()

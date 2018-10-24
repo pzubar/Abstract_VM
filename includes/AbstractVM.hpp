@@ -48,7 +48,7 @@ class AbstractVM
     void _execute(std::string operation);
     void _execute(std::string command, std::string type, std::string num);
     void _setExpression(std::string expression);
-    void _checkExpression(std::string expression);
+    void _checkExpression(std::string & expression);
 
   public:
     explicit AbstractVM(const char *filename);

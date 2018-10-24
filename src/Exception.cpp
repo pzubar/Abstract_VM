@@ -39,7 +39,7 @@ Exception::EmptyStackException::~EmptyStackException() = default;
 Exception::DivisionByZeroException::DivisionByZeroException(const char *msg) : _error(msg)
 {
 }
-const char* Exception::DivisionByZeroException::what() const noexcept
+const char *Exception::DivisionByZeroException::what() const noexcept
 {
     return _error.what();
 }
@@ -48,29 +48,34 @@ Exception::DivisionByZeroException::~DivisionByZeroException() = default;
 Exception::SmallStackException::SmallStackException(const char *msg) : _error(msg)
 {
 }
-const char* Exception::SmallStackException::what() const noexcept {
-    return  _error.what();
+const char *Exception::SmallStackException::what() const noexcept
+{
+    return _error.what();
 }
 Exception::SmallStackException::~SmallStackException() = default;
 
 Exception::AssertionException::AssertionException(const char *msg) : _error(msg)
-{}
-const char* Exception::AssertionException::what() const noexcept
+{
+}
+const char *Exception::AssertionException::what() const noexcept
 {
     return _error.what();
 }
 Exception::AssertionException::~AssertionException() = default;
 
 Exception::WrongExitException::WrongExitException(const char *msg) : _error(msg)
-{}
-const char* Exception::WrongExitException::what() const noexcept {
+{
+}
+const char *Exception::WrongExitException::what() const noexcept
+{
     return _error.what();
 }
 Exception::WrongExitException::~WrongExitException() = default;
 
 Exception::NoExitException::NoExitException(const char *msg) : _error(msg)
-{}
-const char* Exception::NoExitException::what() const noexcept
+{
+}
+const char *Exception::NoExitException::what() const noexcept
 {
     return _error.what();
 }
