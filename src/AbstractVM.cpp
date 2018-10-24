@@ -200,7 +200,7 @@ void AbstractVM::_mod()
 void AbstractVM::_checkExpression(std::string & expression)
 {
 	_line++;
-	if (_isExit)
+	if (_isExit && expression != ";;")
 		throw(Exception::WrongExitException("The program has an \"exit\" instruction"));
 	if (expression == ";;")
 	{
@@ -253,7 +253,7 @@ void AbstractVM::_terminate()
 	if (!_isExit && !_fromFile)
 		throw(Exception::WrongExitException("The program does not have an exit instruction"));
 	std::cout << _out.str();
-	system("leaks avm");
+//	system("leaks avm");
 	exit(0);
 }
 
