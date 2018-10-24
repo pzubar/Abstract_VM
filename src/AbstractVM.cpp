@@ -131,6 +131,7 @@ void AbstractVM::_pop()
 	{
 		throw Exception::EmptyStackException("Instruction \"pop\" on an empty stack");
 	}
+	delete(_container.front());
 	_container.pop_front();
 }
 
