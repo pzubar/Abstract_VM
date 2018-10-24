@@ -35,7 +35,7 @@ AbstractVM::AbstractVM(const char *filename)
 		file.close();
 	}
 	else
-		std::cout << "Unable to open file";
+		std::cout << "Unable to open file" << std::endl;
 }
 
 AbstractVM::~AbstractVM()
