@@ -133,6 +133,7 @@ void AbstractVM::_pop()
 	}
 	delete(_container.front());
 	_container.pop_front();
+	_containerSize--;
 }
 
 void AbstractVM::_assert(std::string const &value, eOperandType type)
