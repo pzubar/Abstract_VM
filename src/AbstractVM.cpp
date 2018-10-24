@@ -61,8 +61,6 @@ void AbstractVM::_setExpression(std::string expression)
 	try
 	{
 		_checkExpression(expression);
-        if (expression.empty() || expression == "\n")
-            return;
 		for (size_t i = 0; !isalpha(expression[i]); i++)
 		{
 			if (expression.empty())
