@@ -29,7 +29,8 @@ AbstractVM::AbstractVM(const char *filename)
 		}
 		catch (Exception::NoExitException &exception)
 		{
-			_out << "No Exit Exception: " << exception.what() << std::endl;
+			_out << RED << "Line " << _line << ": " << CLOSE
+				<< "No Exit Exception: " << exception.what() << std::endl;
 			_terminate();
 		}
 		file.close();
@@ -245,6 +246,7 @@ void AbstractVM::_print()
 
 void AbstractVM::_quit()
 {
+	_out << GREEN << "Line " << _line << ": " << CLOSE << "exit" << std::endl;
 	_isExit = true;
 }
 
@@ -253,7 +255,6 @@ void AbstractVM::_terminate()
 	if (!_isExit && !_fromFile)
 		throw(Exception::WrongExitException("The program does not have an exit instruction"));
 	std::cout << _out.str();
-//	system("leaks avm");
 	exit(0);
 }
 
