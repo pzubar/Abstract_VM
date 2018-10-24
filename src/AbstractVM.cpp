@@ -215,7 +215,7 @@ void AbstractVM::_checkExpression(std::string & expression)
 
 	std::regex reg("(\\s*)?(((push|assert)(\\s+)((int((8|16|32)\\([-]?\\d+\\)))|"
 				   "((float|double)(\\([-]?\\d*[.]*?\\d+\\)))))|"
-				   "(pop|dump|add|sub|mul|div|mod|print|exit|sort|max|min)|(\\;.*)|(\\n))(\\s*)?$");
+				   "(pop|dump|add|sub|mul|div|mod|print|exit|sort|max|min|size)|(\\;.*)|(\\n))(\\s*)?$");
 	if (!std::regex_match(expression.begin(), expression.end(), reg) && !expression.empty())
 		throw Exception::InputException("Unknown instruction or invalid input");
     expression = expression.substr(0, expression.find(';', 0));
@@ -272,6 +272,7 @@ void AbstractVM::_execute(std::string operation)
 			{"sort", &AbstractVM::_sort},
 			{"max", &AbstractVM::_max},
 			{"min", &AbstractVM::_min},
+			{"size", &AbstractVM::_size},
 			{"exit", &AbstractVM::_quit},
 		};
 	(this->*operations[operation])();
@@ -352,4 +353,9 @@ void AbstractVM::_min()
 	_out << GREEN << "Line " << _line << ": " << CLOSE << "min" << std::endl;
 	_out << stod(buff.front()->toString()) << std::endl;
 	buff.clear();
+}
+
+void AbstractVM::_size()
+{
+	_out << GREEN << "Line " << _line << ": " << CLOSE << "size" << std::endl << _containerSize << std::endl;
 }
